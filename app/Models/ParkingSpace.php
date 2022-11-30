@@ -31,7 +31,7 @@ class ParkingSpace{
          * */
     }
 
-    public function addSpace(int $lot_id, int $number, int $hourly_rate) : bool
+    public function addSpace(int $lot_id, int $number) : bool
     {
         /*
          * ielikt datubāzē jaunu parking space(protams, ja dati ir validēti kā derīgi)
