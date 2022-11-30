@@ -26,7 +26,6 @@ final class AddParkingSpaceTable extends AbstractMigration
         $table->addColumn('number','int')
             ->addColumn('lot_id','int')
             ->addForeignKey('lot_id','ParkingLots','id',['delete'=> 'CASCADE', 'update'=> 'NO_ACTION'])
-            ->addColumn('hourly_rate', 'int')
             ->create();
     }
 }

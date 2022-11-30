@@ -10,11 +10,11 @@ class ParkingSpace{
     private int $lot_id;
     private int $hourly_rate;
 
-    public function __construct(){
-        $this->id =0;
-        $this->number=0;
-        $this->hourly_rate=0;
-        $this->lot_id=0;
+    public function __construct(int $lot_id, ?int $id=0, ?int $number=0, ?int $hourly_rate=0){
+        $this->id = $id;
+        $this->number= $number;
+        $this->hourly_rate = $hourly_rate;
+        $this->lot_id = $lot_id;
     }
 
     public function getSpaceIdsFromLotId(int $lot_id) : ?array
@@ -38,4 +38,18 @@ class ParkingSpace{
          * */
     }
 
+    public function getSpace(int $id) : ?ParkingSpace
+    {
+        /*
+         * Iegūst informāciju par stāvvietu, ja tāda stāvvieta eksistē
+         * */
+    }
+
+    public function addSpacesOnLotCreation(int $lot_id, int $number_of_spaces)
+    {
+        /*
+         * No padotā stāvlaukuma id un vietu skaita izveido noteikto skaitu stāvvietu, kuras
+         * saistītas ar padoto stāvlaukumu
+         * */
+    }
 }
