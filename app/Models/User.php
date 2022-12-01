@@ -18,7 +18,12 @@ class User{
         $query = $connection->prepare('INSERT INTO Users VALUES(?,?,?)');
         $query->bind_param('sss', $username, $password_hash, $email);
         $query->execute();
-        return $query;
+        if($query->result_metadata()){
+            $connection->close();
+            return true;
+        }
+        $connection->close();
+        return false;
 
     }
 
@@ -32,6 +37,7 @@ class User{
         $query->bind_param('s', $user_id);
         $query->execute();
         $query->bind_result($id);
+        $connection->close();
         if($id) return true;
         return false;
     }
@@ -56,6 +62,7 @@ class User{
                 return true;
             }
         }
+        $connection->close();
         return false;
     }
 }

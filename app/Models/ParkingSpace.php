@@ -10,11 +10,13 @@ class ParkingSpace{
     private int $lot_id;
     private int $hourly_rate;
 
-    public function __construct(int $lot_id, ?int $id=0, ?int $number=0, ?int $hourly_rate=0){
-        $this->id = $id;
+    //public function __construct(int $lot_id, ?int $id=0, ?int $number=0, ?int $hourly_rate=0){
+    public function __construct()
+    {
+        /*$this->id = $id;
         $this->number= $number;
         $this->hourly_rate = $hourly_rate;
-        $this->lot_id = $lot_id;
+        $this->lot_id = $lot_id;*/
     }
 
     public function getSpaceIdsFromLotId(int $lot_id) : ?array
@@ -51,5 +53,13 @@ class ParkingSpace{
          * No padotā stāvlaukuma id un vietu skaita izveido noteikto skaitu stāvvietu, kuras
          * saistītas ar padoto stāvlaukumu
          * */
+        $connection = (new DBConnection())->createConnection();
+        for($i = 1; $i <=$number_of_spaces ; $i++){
+            $query = $connection->prepare('INSERT INTO ParkingSpaces VALUES (?,?)');
+            $query->bind_param('ii', $lot_id, $i);
+            $query->execute();
+        }
+        $connection->close();
+
     }
 }
