@@ -24,4 +24,11 @@ class UserController{
          * Iegūt visas lietotāja rezervācijas, varbūt kādā noteiktā periodā
          * */
     }
+
+    public function isUserLoggedIn()
+    {
+        /*
+         * pārbaudīt, vai lietotājs ir ielogojies, vai nē.
+         * */
+    }
 }

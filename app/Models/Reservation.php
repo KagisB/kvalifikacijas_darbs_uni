@@ -32,4 +32,10 @@ class Reservation{
          * */
     }
 
+    public function checkUserReservation(int $user_id,Datetime $from, Datetime $till) : bool
+    {
+        /*
+         * Pārbaudīt, vai lietotājam ir rezervācija noteiktajā laika periodā
+         * */
+    }
 }

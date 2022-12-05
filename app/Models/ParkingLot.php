@@ -35,6 +35,13 @@ class ParkingLot{
         return false;
     }
 
+    public function removeLot()
+    {
+        /*
+         * izdzēst visas stāvvietas, kas saistītas ar stāvlaukumu, tad izdzēst pašu stāvlaukumu
+         * */
+    }
+
     public function getSpaceCount(int $lotId)
     {
         /*

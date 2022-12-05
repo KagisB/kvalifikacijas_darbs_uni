@@ -31,4 +31,11 @@ class LotController{
          * Nomainīt informāciju par stāvlaukumu, vai vietu skaitu izmainīt, vai nomainīt maksas rādītāju
          * */
     }
+
+    public function removeLot()
+    {
+        /*
+         * izdzēst visas stāvvietas, kas saistītas ar stāvlaukumu, tad izdzēst pašu stāvlaukumu
+         * */
+    }
 }
