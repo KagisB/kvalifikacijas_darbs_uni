@@ -38,4 +38,9 @@ class Reservation{
          * Pārbaudīt, vai lietotājam ir rezervācija noteiktajā laika periodā
          * */
     }
+
+    public function checkSpaceReservation(Datetime $timeNow) : bool
+    {
+
+    }
 }

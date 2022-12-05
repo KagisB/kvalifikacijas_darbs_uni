@@ -29,6 +29,7 @@ final class AddReservationsTable extends AbstractMigration
             ->addForeignKey('space_id','ParkingSpaces','id',['delete'=> 'CASCADE', 'update'=> 'NO_ACTION'])
             ->addColumn('from', 'datetime')
             ->addColumn('till', 'datetime')
+            ->addColumn('reservation_code', 'string', ['limit' => 7])
             ->create();
     }
 }
