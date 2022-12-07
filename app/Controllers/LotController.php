@@ -55,7 +55,16 @@ class LotController{
             return false;
         }
         //Izveidot ParkingLot objektu no id, un salīdzināt datus.
-
+        $lot = (new ParkingLot)->getLot($id);
+        if($address !== $lot->address){
+            $lot->changeAddress($id,$address);
+        }
+        if($numberOfSpaces !== $lot->space_count){
+            $lot->changeNumberOfSpaces($id,$numberOfSpaces);
+        }
+        if($hourly_rate !== $lot->hourly_rate){
+            $lot->changeHourlyRate($id,$hourly_rate);
+        }
     }
 
     public function removeLot(int $id)

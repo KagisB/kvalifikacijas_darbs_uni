@@ -5,10 +5,10 @@ use App\Models\DBConnection;
 use App\Models\ParkingSpace;
 
 class ParkingLot{
-    private int $id;
-    private int $space_count;
-    private float $hourly_rate;
-    private string $address;
+    public int $id;
+    public int $space_count;
+    public float $hourly_rate;
+    public string $address;
 
     public function __construct(?int $id = 0, ?string $address = '', ?int $space_count = 0, ?float $hourly_rate = 0)
     {
@@ -35,7 +35,9 @@ class ParkingLot{
         $query->bind_param('i', $id);
         $query->execute();
         $connection->close();
-        return $query;
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        return  new ParkingLot($id,$row['address'],$row['space_number'],$row['hourly_rate']);
     }
 
     public function addLot(string $address, int $numberOfSpaces, float $hourly_rate)
