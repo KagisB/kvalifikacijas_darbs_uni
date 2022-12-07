@@ -7,15 +7,35 @@ use App\Models\ParkingSpace;
 class ParkingLot{
     private int $id;
     private int $space_count;
-    private int $hourly_rate;
+    private float $hourly_rate;
     private string $address;
 
-    public function __construct()
+    public function __construct(?int $id = 0, ?string $address = '', ?int $space_count = 0, ?float $hourly_rate = 0)
     {
         $this->id = 0;
         $this->address = '';
         $this->space_count = 0;
         $this->hourly_rate = 0;
+    }
+
+    public function lotExists(int $id) : bool
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT * FROM ParkingLots WHERE id = ?');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $connection->close();
+        return $query;
+    }
+
+    public function getLot(int $id) : ?ParkingLot
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT * FROM ParkingLots WHERE id = ?');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $connection->close();
+        return $query;
     }
 
     public function addLot(string $address, int $numberOfSpaces, float $hourly_rate)
@@ -63,14 +83,39 @@ class ParkingLot{
         return $row['space_count'];
     }
 
-    public function changeHourlyRate(int $lot_id, int $hourly_rate)
+    public function changeHourlyRate(int $lot_id, float $hourly_rate)
     {
         /*
          * Nomainīt hourly_rate esošam stāvlaukumam
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('UPDATE ParkingLots SET hourly_rate = ? WHERE id = ?');
-        $query->bind_param('ii', $hourly_rate,$lot_id);
+        $query->bind_param('di', $hourly_rate,$lot_id);
+        $query->execute();
+        $connection->close();
+        return $query;//varbūt būs jānomaina uz variable, kas ir vienāds ar to query execute un atgriezt variable
+    }
+
+    public function changeNumberOfSpaces(int $lot_id, int $number_of_spaces)
+    {
+        /*
+         * Nomainīt space number esošam stāvlaukumam
+         * */
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('UPDATE ParkingLots SET space_number = ? WHERE id = ?');
+        $query->bind_param('ii', $number_of_spaces,$lot_id);
+        $query->execute();
+        $connection->close();
+        return $query;//varbūt būs jānomaina uz variable, kas ir vienāds ar to query execute un atgriezt variable
+    }
+    public function changeAddress(int $lot_id, string $address)
+    {
+        /*
+         * Nomainīt hourly_rate esošam stāvlaukumam
+         * */
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('UPDATE ParkingLots SET address = ? WHERE id = ?');
+        $query->bind_param('si', $address,$lot_id);
         $query->execute();
         $connection->close();
         return $query;//varbūt būs jānomaina uz variable, kas ir vienāds ar to query execute un atgriezt variable

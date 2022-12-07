@@ -7,16 +7,18 @@ namespace app\Models;
 use app\Models\Reservation;
 
 class ParkingSpace{
-    private int $id;
+    public int $id;
     public int $number;
-    private int $lot_id;
+    public int $lot_id;
+    public bool $reservation_status = false;
 
     //public function __construct(int $lot_id, ?int $id=0, ?int $number=0, ?int $hourly_rate=0){
-    public function __construct(int $lot_id, ?int $id=0, ?int $number=0)
+    public function __construct(?int $lot_id=0, ?int $id=0, ?int $number=0)
     {
         $this->id = $id;
         $this->number= $number;
         $this->lot_id = $lot_id;
+        $this->reservation_status = $this->isReserved($id);
     }
 
     public function getSpaceIdsFromLotId(int $lot_id) : array
@@ -25,7 +27,7 @@ class ParkingSpace{
          * do query in database where it returns all space ids that belong to the lot
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('SELECT id FROM ParkingSpace WHERE id = ?');
+        $query = $connection->prepare('SELECT id FROM ParkingSpace WHERE id = ?'); // sort by number i guess?
         $query->bind_param('i', $lot_id);
         $query->execute();
         $result = $query->get_result();
@@ -38,14 +40,25 @@ class ParkingSpace{
         return $spaceIds;
     }
 
-    public function isReserved() : bool
+    public function getSpaceFromIds(int $lot_id) : ?array
+    {
+        $spaces = null;
+        $spaceIds = $this->getSpaceIdsFromLotId($lot_id);
+        foreach($spaceIds as $spaceId)
+        {
+            $spaces[] = $this->getSpace($spaceId);
+        }
+        return $spaces;
+    }
+
+    public function isReserved(int $id) : bool
     {
         /*
          * no datubāzes, ja ir rezervēts laika periodā, atgriezt true
          * Iesaistīt Reservation tabulu/modeli
          * */
         $timeNow = new \DateTime('now');
-        return (new Reservation)->checkSpaceReservation($timeNow);
+        return (new Reservation)->checkSpaceReservation($id,$timeNow);
     }
 
     public function addSpace(int $lot_id, int $number) : bool
@@ -92,6 +105,19 @@ class ParkingSpace{
             $query->execute();
         }
         $connection->close();
+    }
 
+    public function removeSpacesOnLotDeletion(int $lot_id)
+    {
+        /*
+         * No padotā stāvlaukuma id un vietu skaita izveido noteikto skaitu stāvvietu, kuras
+         * saistītas ar padoto stāvlaukumu
+         * */
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('DELETE FROM ParkingSpaces WHERE lot_id = ?');
+        $query->bind_param('i', $lot_id);
+        $query->execute();
+        $connection->close();
+        return $query;
     }
 }

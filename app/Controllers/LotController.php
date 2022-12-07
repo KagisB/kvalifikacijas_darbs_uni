@@ -3,6 +3,9 @@
 namespace app\Controllers;
 
 use Datetime;
+use app\Models\ParkingLot;
+use app\Models\ParkingSpace;
+
 class LotController{
     public function getBusynessData(Datetime $from, Datetime $till)
     {
@@ -11,31 +14,62 @@ class LotController{
          * */
     }
 
-    public function getSpaces()
+    public function getSpaces(int $id)
     {
         /*
          * Iegūt sarakstu ar stāvvietām, kas pieder stāvlaukumam, sagatavot datus lapai
          * */
+        $data = null;
+        if((new ParkingLot)->lotExists($id))
+        {
+            $spaces = (new ParkingSpace)->getSpaceFromIds($id);
+            foreach($spaces as $space)
+            {
+                $data[]=[
+                    'id' => $space->id,
+                    'number' => $space->number,
+                    'lot_id' => $space->lot_id,
+                ];
+            }
+        }
+        return json_encode($data);;
     }
 
-    public function addLot()
+    public function addLot(string $address, int $numberOfSpaces, float $hourly_rate) : bool
     {
         /*
          * Pārbaudīt datus, padot modeļa metodei, kura uztaisītu jaunu stāvlaukumu
          * */
+        if(strlen($address)>75 || $numberOfSpaces<1 || $hourly_rate < 0){
+            return false;
+        }
+        return (new ParkingLot)->addLot($address, $numberOfSpaces, $hourly_rate);
     }
 
-    public function editLot()
+    public function editLot(int $id, string $address, int $numberOfSpaces, float $hourly_rate)
     {
         /*
          * Nomainīt informāciju par stāvlaukumu, vai vietu skaitu izmainīt, vai nomainīt maksas rādītāju
          * */
+        if(strlen($address)>75 || $numberOfSpaces<1 || $hourly_rate < 0){
+            return false;
+        }
+        //Izveidot ParkingLot objektu no id, un salīdzināt datus.
+
     }
 
-    public function removeLot()
+    public function removeLot(int $id)
     {
         /*
          * izdzēst visas stāvvietas, kas saistītas ar stāvlaukumu, tad izdzēst pašu stāvlaukumu
          * */
+        if((new ParkingLot)->lotExists($id))
+        {
+            if((new ParkingSpace)->removeSpacesOnLotDeletion($id)){
+                return (new ParkingLot)->removeLot($id);
+            }
+            return false;
+        }
+        return false;
     }
 }
