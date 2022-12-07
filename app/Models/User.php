@@ -14,7 +14,7 @@ class User{
          * */
         $password_hash = password_hash($password,PASSWORD_BCRYPT);
 
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('INSERT INTO Users VALUES(?,?,?)');
         $query->bind_param('sss', $username, $password_hash, $email);
         $query->execute();
@@ -32,7 +32,7 @@ class User{
         /*
          * Pārbaudīt, vai lietotājs eksistē
          * */
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('SELECT id FROM Users WHERE id = ?');
         $query->bind_param('s', $user_id);
         $query->execute();
@@ -51,7 +51,7 @@ class User{
         {
             return false;
         }
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('SELECT username, password FROM Users WHERE id = ? LIMIT 1');
         $query->bind_param('s', $user_id);
         $query->execute();

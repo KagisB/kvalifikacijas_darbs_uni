@@ -24,7 +24,7 @@ class ParkingLot{
          * pievienot stāvlaukumu datubāzē, kad stāvlaukums izveidots, izveidot stāvvietas caur
          * ParkingSpace model
          * */
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('INSERT INTO ParkingLots VALUES (?,?,?)');
         $query->bind_param('sii', $address, $numberOfSpaces, $hourly_rate);
         $query->execute();
@@ -38,7 +38,7 @@ class ParkingLot{
 
     public function removeLot(int $lot_id)
     {
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('DELETE FROM ParkingLots WHERE id = ?');
         $query->bind_param('i', $lot_id);
         $query->execute();
@@ -53,7 +53,7 @@ class ParkingLot{
         /*
          * Atgriezt stāvvietu skaitu stāvlaukumam
          * */
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('SELECT space_count FROM ParkingLots WHERE id = ?');
         $query->bind_param('i', $lot_id);
         $query->execute();
@@ -68,7 +68,7 @@ class ParkingLot{
         /*
          * Nomainīt hourly_rate esošam stāvlaukumam
          * */
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('UPDATE ParkingLots SET hourly_rate = ? WHERE id = ?');
         $query->bind_param('ii', $hourly_rate,$lot_id);
         $query->execute();

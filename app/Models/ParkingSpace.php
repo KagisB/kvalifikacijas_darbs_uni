@@ -24,7 +24,7 @@ class ParkingSpace{
         /*
          * do query in database where it returns all space ids that belong to the lot
          * */
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('SELECT id FROM ParkingSpace WHERE id = ?');
         $query->bind_param('i', $lot_id);
         $query->execute();
@@ -53,7 +53,7 @@ class ParkingSpace{
         /*
          * ielikt datubāzē jaunu parking space(protams, ja dati ir validēti kā derīgi)
          * */
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         for($i = 1; $i <=$number ; $i++){
             $query = $connection->prepare('INSERT INTO ParkingSpaces VALUES (?,?)');
             $query->bind_param('ii', $lot_id, $i);
@@ -67,7 +67,7 @@ class ParkingSpace{
         /*
          * Iegūst informāciju par stāvvietu, ja tāda stāvvieta eksistē
          * */
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('SELECT * FROM ParkingSpace WHERE id = ?');
         $query->bind_param('i', $space_id);
         $query->execute();
@@ -85,7 +85,7 @@ class ParkingSpace{
          * No padotā stāvlaukuma id un vietu skaita izveido noteikto skaitu stāvvietu, kuras
          * saistītas ar padoto stāvlaukumu
          * */
-        $connection = (new DBConnection())->createConnection();
+        $connection = (new DBConnection())->createMySQLiConnection();
         for($i = 1; $i <=$number_of_spaces ; $i++){
             $query = $connection->prepare('INSERT INTO ParkingSpaces VALUES (?,?)');
             $query->bind_param('ii', $lot_id, $i);
