@@ -21,13 +21,22 @@ class ParkingSpace{
         $this->reservation_status = $this->isReserved($id);
     }
 
+    public function spaceExists(int $id)
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT * FROM ParkingSpaces WHERE id = ?');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $connection->close();
+        return $query;
+    }
     public function getSpaceIdsFromLotId(int $lot_id) : array
     {
         /*
          * do query in database where it returns all space ids that belong to the lot
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('SELECT id FROM ParkingSpace WHERE id = ?'); // sort by number i guess?
+        $query = $connection->prepare('SELECT id FROM ParkingSpaces WHERE id = ?'); // sort by number i guess?
         $query->bind_param('i', $lot_id);
         $query->execute();
         $result = $query->get_result();
@@ -81,7 +90,7 @@ class ParkingSpace{
          * Iegūst informāciju par stāvvietu, ja tāda stāvvieta eksistē
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('SELECT * FROM ParkingSpace WHERE id = ?');
+        $query = $connection->prepare('SELECT * FROM ParkingSpaces WHERE id = ?');
         $query->bind_param('i', $space_id);
         $query->execute();
         $result = $query->get_result();
@@ -99,7 +108,22 @@ class ParkingSpace{
          * saistītas ar padoto stāvlaukumu
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
-        for($i = 1; $i <=$number_of_spaces ; $i++){
+        for($i = 1; $i <= $number_of_spaces; $i++){
+            $query = $connection->prepare('INSERT INTO ParkingSpaces VALUES (?,?)');
+            $query->bind_param('ii', $lot_id, $i);
+            $query->execute();
+        }
+        $connection->close();
+    }
+
+    public function addSpacesOnSpaceCountEdit(int $lot_id, int $number_of_spaces, int $originalSpaceCount)
+    {
+        /*
+         * No padotā stāvlaukuma id un vietu skaita izveido noteikto skaitu stāvvietu, kuras
+         * saistītas ar padoto stāvlaukumu
+         * */
+        $connection = (new DBConnection())->createMySQLiConnection();
+        for($i = $originalSpaceCount+1; $i <= $number_of_spaces; $i++){
             $query = $connection->prepare('INSERT INTO ParkingSpaces VALUES (?,?)');
             $query->bind_param('ii', $lot_id, $i);
             $query->execute();
@@ -116,6 +140,20 @@ class ParkingSpace{
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('DELETE FROM ParkingSpaces WHERE lot_id = ?');
         $query->bind_param('i', $lot_id);
+        $query->execute();
+        $connection->close();
+        return $query;
+    }
+
+    public function removeSpacesOnSpaceCountEdit(int $lot_id, int $number_of_spaces)
+    {
+        /*
+         * No padotā stāvlaukuma id un vietu skaita izveido noteikto skaitu stāvvietu, kuras
+         * saistītas ar padoto stāvlaukumu
+         * */
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('DELETE FROM ParkingSpaces WHERE lot_id = ? AND number > ?');
+        $query->bind_param('ii', $lot_id, $number_of_spaces);
         $query->execute();
         $connection->close();
         return $query;

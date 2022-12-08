@@ -98,11 +98,25 @@ class ParkingLot{
         return $query;//varbūt būs jānomaina uz variable, kas ir vienāds ar to query execute un atgriezt variable
     }
 
-    public function changeNumberOfSpaces(int $lot_id, int $number_of_spaces)
+    public function changeNumberOfSpaces(int $lot_id, int $number_of_spaces) : bool
     {
         /*
-         * Nomainīt space number esošam stāvlaukumam
+         * Salīdzināt atšķirību starp vietu daudzumu iepriekš un tagad, un attiecīgi izdzēst/pielikt vietas
+         * stāvlaukumam, atbilstoši arī atjaunojot ParkingSpaces tabulu
          * */
+        $lot = $this->getLot($lot_id);
+        $difference = $number_of_spaces - $lot->space_count;
+        if($difference > 0){
+            (new ParkingSpace())->addSpacesOnSpaceCountEdit($lot_id,$number_of_spaces,$lot->space_count);
+            return $this->updateNumberOfSpaces($lot_id,$number_of_spaces);
+        }
+        //Nevajag izdzēst arī reservations vietām, jo ir uzlikts datubāzē, kad izdzēš reservations, ja izdzēšas space
+        (new ParkingSpace())->removeSpacesOnSpaceCountEdit($lot_id,$number_of_spaces);
+        return $this->updateNumberOfSpaces($lot_id,$number_of_spaces);
+    }
+
+    public function updateNumberOfSpaces(int $lot_id, int $number_of_spaces) : bool
+    {
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('UPDATE ParkingLots SET space_number = ? WHERE id = ?');
         $query->bind_param('ii', $number_of_spaces,$lot_id);
@@ -110,6 +124,7 @@ class ParkingLot{
         $connection->close();
         return $query;//varbūt būs jānomaina uz variable, kas ir vienāds ar to query execute un atgriezt variable
     }
+
     public function changeAddress(int $lot_id, string $address)
     {
         /*

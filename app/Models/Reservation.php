@@ -6,6 +6,11 @@ use App\Models\DBConnection;
 use Datetime;
 
 class Reservation{
+    public int $id;
+    public int $user_id;
+    public int $space_id;
+    public Datetime $from;
+    public Datetime $till;
 
     public function __construct()
     {
@@ -48,28 +53,38 @@ class Reservation{
         return $reservationIds;
     }
 
-    public function getReservationsInTimePeriod(int $space_id,Datetime $from, Datetime $till) : array
+    public function getSpaceReservationsInTimePeriod(int $space_id,Datetime $from, Datetime $till) : ?array
     {
-        /*
-         * Iegūst rezervācijas noteiktajā periodā noteiktai stāvvietai
-         * */
-        $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare(
-            'SELECT id FROM Reservations WHERE space_id = ?
-                    AND from > ? AND till < ?');
+        $connection = (new DBConnection())->createPDOConnection();
+        $sql = <<<MySQL
+            SELECT * FROM Reservations 
+            WHERE space_id = :space_id
+            AND (from < :timeFrom AND till < :timeTill)
+            OR (from > :timeFrom AND till < :timeTill)
+            OR (from > :timeFrom AND till > :timeTill)
+        MySQL;
         $timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
         $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
-        $query->bind_param('iss', $space_id, $timeFrom, $timeTill);
-        $query->execute();
-        $connection->close();
-        $result = $query->get_result();
-        $reservationIds= null;
-        while($row = $result->fetch_assoc())
-        {
-            $reservationIds[] = $row['id'];
+        $params = [
+            'space_id' => $space_id,
+            'timeFrom' => $timeFrom,
+            'timeTill' => $timeTill,
+        ];
+        $query = $connection->prepare($sql);
+        $query->execute($params);
+
+        $reservations = [];
+        while($row = $query->fetch()){
+            $reservations[]=[
+                'id' => $row['id'],
+                'user_id' => $row['user_id'],
+                'space_id' => $row['space_id'],
+                'from' => $row['from'],
+                'till' => $row['till'],
+            ];
         }
-        $connection->close();
-        return $reservationIds;
+        $connection=null;
+        return $reservations;
     }
 
     public function checkUserReservation(int $user_id,Datetime $from, Datetime $till) : bool
@@ -94,9 +109,8 @@ class Reservation{
         ];
         $query = $connection->prepare($sql);
         $query->execute($params);
-        $results = $query->fetchAll();
         $connection=null;
-        if(empty($results)){
+        if(empty($query->fetchAll())){
             return false;
         }
         return true;
