@@ -11,10 +11,16 @@ class Reservation{
     public int $space_id;
     public Datetime $from;
     public Datetime $till;
+    public string $reservation_code;
 
-    public function __construct()
+    public function __construct(int $id, int $user_id, int $space_id, Datetime $from, Datetime $till, string $reservation_code)
     {
-
+        $this->id = $id;
+        $this->user_id = $user_id;
+        $this->space_id = $space_id;
+        $this->from = $from;
+        $this->till = $till;
+        $this->reservation_code = $reservation_code;
     }
 
     public function addReservation(int $user_id, int $space_id, Datetime $from, Datetime $till) : bool
@@ -33,13 +39,13 @@ class Reservation{
         return $query;
     }
 
-    public function getReservationsByUserId(int $user_id) : array
+    public function getReservationIdsByUserId(int $user_id) : array
     {
         /*
          * atgriezt visas rezervācijas noteiktā periodā? kuras rezervējis konkrēts lietotājs
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('SELECT id FROM Reservations WHERE user_id = ?');
+        $query = $connection->prepare('SELECT id FROM Reservations WHERE user_id = ?'); // limitu, lai nav daudz datu?
         $query->bind_param('i', $user_id);
         $query->execute();
         $connection->close();
@@ -51,6 +57,36 @@ class Reservation{
         }
         $connection->close();
         return $reservationIds;
+    }
+
+    public function getReservationsByUserId(int $user_id) : array
+    {
+        $reservationIds = $this->getReservationIdsByUserId($user_id);
+        $reservations = [];
+        foreach($reservationIds as $reservationId) {
+            $reservation = $this->getReservationById($reservationId);
+            $reservations[] = [
+              'id' => $reservation->id,
+              'user_id' => $reservation->user_id,
+              'space_id' => $reservation->space_id,
+              'from' => $reservation->from,
+              'till' => $reservation->till,
+              'reservation_code' => $reservation->reservation_code,
+            ];
+        }
+        return $reservations;
+    }
+
+    public function getReservationById(int $id)
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT * FROM Reservations WHERE id = ?');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $connection->close();
+        $result = $query->get_result();
+        $row = $result->fetch_assoc();
+        return  new Reservation($id,$row['user_id'],$row['space_id'],$row['from'],$row['till'], $row['reservation_code']);
     }
 
     public function getSpaceReservationsInTimePeriod(int $space_id,Datetime $from, Datetime $till) : ?array
@@ -81,6 +117,7 @@ class Reservation{
                 'space_id' => $row['space_id'],
                 'from' => $row['from'],
                 'till' => $row['till'],
+                'reservation_code' => $row['reservation_code'],
             ];
         }
         $connection=null;
