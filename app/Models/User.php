@@ -13,18 +13,15 @@ class User{
          * Vajag gan jau uztaisīt, lai aizsūta verification email
          * */
         $password_hash = password_hash($password,PASSWORD_BCRYPT);
-
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('INSERT INTO Users VALUES(?,?,?)');
         $query->bind_param('sss', $username, $password_hash, $email);
         $query->execute();
+        $connection->close();
         if($query->result_metadata()){
-            $connection->close();
             return true;
         }
-        $connection->close();
         return false;
-
     }
 
     public function userExists(int $user_id) : bool
@@ -42,23 +39,19 @@ class User{
         return false;
     }
 
-    public function checkLoginInfo(int $user_id, string $username, string $password) : bool
+    public function checkLoginInfo(string $username, string $password) : bool
     {
         /*
          * Salīdzina padoto paroli ar datubāzē esošo paroli
          * */
-        if(!$this->userExists($user_id))
-        {
-            return false;
-        }
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('SELECT username, password FROM Users WHERE id = ? LIMIT 1');
-        $query->bind_param('s', $user_id);
+        $query = $connection->prepare('SELECT username, password FROM Users WHERE username = ? LIMIT 1');
+        $query->bind_param('s', $username);
         $query->execute();
         $result = $query->get_result();
         while($row = $result->fetch_assoc())
         {
-            if(password_verify($password,$row['password']) && $username === $row['username']){
+            if(password_verify($password,$row['password'])){
                 return true;
             }
         }

@@ -13,7 +13,8 @@ class Reservation{
     public Datetime $till;
     public string $reservation_code;
 
-    public function __construct(int $id, int $user_id, int $space_id, Datetime $from, Datetime $till, string $reservation_code)
+    public function __construct(?int $id = 0, ?int $user_id = 0, ?int $space_id = 0, ?Datetime $from = null,
+                                ?Datetime $till = null, ?string $reservation_code = '')
     {
         $this->id = $id;
         $this->user_id = $user_id;
@@ -39,29 +40,39 @@ class Reservation{
         return $query;
     }
 
-    public function getReservationIdsByUserId(int $user_id) : array
+    public function getReservationIdsByUserId(int $user_id, Datetime $from, Datetime $till) : array
     {
         /*
          * atgriezt visas rezervācijas noteiktā periodā? kuras rezervējis konkrēts lietotājs
          * */
-        $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('SELECT id FROM Reservations WHERE user_id = ?'); // limitu, lai nav daudz datu?
-        $query->bind_param('i', $user_id);
-        $query->execute();
-        $connection->close();
-        $result = $query->get_result();
-        $reservationIds= null;
-        while($row = $result->fetch_assoc())
-        {
+        $connection = (new DBConnection())->createPDOConnection();
+        $sql = <<<MySQL
+            SELECT id FROM Reservations 
+            WHERE user_id = :user_id
+            AND (from < :timeFrom AND till < :timeTill)
+            OR (from > :timeFrom AND till < :timeTill)
+            OR (from > :timeFrom AND till > :timeTill)
+        MySQL;
+        $timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
+        $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
+        $params = [
+            'user_id' => $user_id,
+            'timeFrom' => $timeFrom,
+            'timeTill' => $timeTill,
+        ];
+        $query = $connection->prepare($sql);
+        $query->execute($params);
+        $connection=null;
+        $reservationIds = null;
+        while($row = $query->fetch()){
             $reservationIds[] = $row['id'];
         }
-        $connection->close();
         return $reservationIds;
     }
 
-    public function getReservationsByUserId(int $user_id) : array
+    public function getReservationsByUserId(int $user_id, Datetime $from, Datetime $till) : array
     {
-        $reservationIds = $this->getReservationIdsByUserId($user_id);
+        $reservationIds = $this->getReservationIdsByUserId($user_id, $from, $till);
         $reservations = [];
         foreach($reservationIds as $reservationId) {
             $reservation = $this->getReservationById($reservationId);
@@ -129,25 +140,7 @@ class Reservation{
         /*
          * Pārbaudīt, vai lietotājam ir rezervācija noteiktajā laika periodā
          * */
-        $connection = (new DBConnection())->createPDOConnection();
-        $sql = <<<MySQL
-            SELECT id FROM Reservations 
-            WHERE user_id = :user_id
-            AND (from < :timeFrom AND till < :timeTill)
-            OR (from > :timeFrom AND till < :timeTill)
-            OR (from > :timeFrom AND till > :timeTill)
-        MySQL;
-        $timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
-        $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
-        $params = [
-            'user_id' => $user_id,
-            'timeFrom' => $timeFrom,
-            'timeTill' => $timeTill,
-        ];
-        $query = $connection->prepare($sql);
-        $query->execute($params);
-        $connection=null;
-        if(empty($query->fetchAll())){
+        if(is_null($this->getReservationIdsByUserId($user_id,$from,$till))){
             return false;
         }
         return true;
