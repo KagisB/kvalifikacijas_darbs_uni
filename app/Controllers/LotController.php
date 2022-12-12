@@ -35,6 +35,19 @@ class LotController{
         return json_encode($data);;
     }
 
+    public function getLotList()
+    {
+        /*
+         * Iegūt sarakstu ar visiem stāvlaukumiem, to adresēm un vietu skaitu.
+         * */
+        $data = null;
+        $lots = (new ParkingLot())->getLotList();
+        foreach($lots as $lot) {
+            $data[] = $lot;
+        }
+        return json_encode($data);
+    }
+
     public function addLot(string $address, int $numberOfSpaces, float $hourly_rate) : bool
     {
         /*

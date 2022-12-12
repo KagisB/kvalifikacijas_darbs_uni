@@ -40,6 +40,25 @@ class ParkingLot{
         return  new ParkingLot($id,$row['address'],$row['space_number'],$row['hourly_rate']);
     }
 
+    public function getLotList() : array
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT * FROM ParkingLots');
+        $query->execute();
+        $connection->close();
+        $result = $query->get_result();
+        $lots = [];
+        while($row = $result->fetch_assoc()) {
+            $lots[] = [
+                'id' => $row['id'],
+                'address' => $row['address'],
+                'space_number' => $row['space_number'],
+                'hourly_rate' => $row['hourly_rate'],
+            ];
+        }
+        return $lots;
+    }
+
     public function addLot(string $address, int $numberOfSpaces, float $hourly_rate)
     {
         /*
