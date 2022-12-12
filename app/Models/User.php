@@ -24,6 +24,23 @@ class User{
         return false;
     }
 
+    public function getUserInfo(int $id) {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT username,status FROM Users WHERE id = ? LIMIT 1');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $connection->close();
+        $info = null;
+        $result = $query->get_result();
+        while($row = $result->fetch_assoc()) {
+            $info = [
+                'username' => $row['username'],
+                'status' => $row['status'],
+            ];
+        }
+        return $info;
+    }
+
     public function userExists(int $user_id) : bool
     {
         /*
@@ -31,7 +48,7 @@ class User{
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('SELECT id FROM Users WHERE id = ?');
-        $query->bind_param('s', $user_id);
+        $query->bind_param('i', $user_id);
         $query->execute();
         $query->bind_result($id);
         $connection->close();
