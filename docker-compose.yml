@@ -19,7 +19,7 @@ services :
     cap_add:
       - SYS_NICE
     environment:
-      - MYSQL_DATABASE=carRoute
+      - MYSQL_DATABASE=carParking
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=password
       - MYSQL_ROOT_PASSWORD=root

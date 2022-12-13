@@ -23,11 +23,11 @@ final class AddBusynessTable extends AbstractMigration
             $table = $this->table('Busyness')->drop()->save();
         }
         $table = $this->table('Busyness');
-        $table->addColumn('lot_id','int')
+        $table->addColumn('lot_id','integer')
             ->addForeignKey('lot_id','ParkingLots','id',['delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'])
             ->addColumn('from', 'datetime')
             ->addColumn('till', 'datetime')
-            ->addColumn('spaces_filled','int')
+            ->addColumn('spaces_filled','integer')
             ->create();
     }
 }

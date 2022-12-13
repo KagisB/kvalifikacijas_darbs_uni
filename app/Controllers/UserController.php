@@ -24,14 +24,6 @@ class UserController{
         return (new User())->checkLoginInfo($username,$password);
     }
 
-    public function authHTML()
-    {
-        if(empty($_SESSION['userlogin'])){
-            header('Location: ../views/login.php');
-            exit();
-        }
-    }
-
     public function getUserId() : ?int
     {
         /*
@@ -102,5 +94,12 @@ class UserController{
             return false;
         }
         return true;
+    }
+
+    public function logOut()
+    {
+        session_start();
+        session_unset();
+        session_destroy();
     }
 }

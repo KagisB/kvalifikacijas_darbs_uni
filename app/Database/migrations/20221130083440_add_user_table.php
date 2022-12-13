@@ -27,9 +27,9 @@ final class AddUserTable extends AbstractMigration
         $table->addColumn('username', 'string', ['limit' => 25])
             ->addColumn('password', 'string', ['limit' => 255])
             ->addColumn('email', 'string', ['limit' => 50])
-            ->addColumn('status', 'int', ['limit' => 1])
+            ->addColumn('status', 'integer', ['limit' => 1, 'default' => 0])
             ->addColumn('created', 'datetime', ['default' => $date->format(DATE_ATOM)])
-            ->addColumn('deleted', 'bool', ['default' => false])
+            ->addColumn('deleted', 'boolean', ['default' => false])
             ->addIndex(['username', 'email'], ['unique' => true])
             ->create();
     }

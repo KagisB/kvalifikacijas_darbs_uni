@@ -23,8 +23,8 @@ final class AddParkingSpaceTable extends AbstractMigration
             $table = $this->table('ParkingSpaces')->drop()->save();
         }
         $table = $this->table('ParkingSpaces');
-        $table->addColumn('number','int')
-            ->addColumn('lot_id','int')
+        $table->addColumn('number','integer')
+            ->addColumn('lot_id','integer')
             ->addForeignKey('lot_id','ParkingLots','id',['delete'=> 'CASCADE', 'update'=> 'NO_ACTION'])
             ->create();
     }

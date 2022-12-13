@@ -23,9 +23,9 @@ final class AddPayementsTable extends AbstractMigration
             $table = $this->table('Payments')->drop()->save();
         }
         $table = $this->table('Payments');
-        $table->addColumn('user_id','int')
+        $table->addColumn('user_id','integer')
             ->addForeignKey('user_id','Users','id',['delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'])
-            ->addColumn('sum', 'int')
+            ->addColumn('sum', 'integer')
             ->addColumn('execution_time', 'datetime')
             ->create();
     }

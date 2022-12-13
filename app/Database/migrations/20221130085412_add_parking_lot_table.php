@@ -24,7 +24,7 @@ final class AddParkingLotTable extends AbstractMigration
         }
         $table = $this->table('ParkingLots');
         $table->addColumn('address','string', ['limit' => 75])
-            ->addColumn('space_count','int')
+            ->addColumn('space_count','integer')
             ->addColumn('hourly_rate', 'float')
             ->create();
     }

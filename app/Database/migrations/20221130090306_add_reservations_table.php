@@ -23,9 +23,9 @@ final class AddReservationsTable extends AbstractMigration
             $table = $this->table('Reservations')->drop()->save();
         }
         $table = $this->table('Reservations');
-        $table->addColumn('user_id','int')
+        $table->addColumn('user_id','integer')
             ->addForeignKey('user_id','Users','id',['delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'])
-            ->addColumn('space_id','int')
+            ->addColumn('space_id','integer')
             ->addForeignKey('space_id','ParkingSpaces','id',['delete'=> 'CASCADE', 'update'=> 'NO_ACTION'])
             ->addColumn('from', 'datetime')
             ->addColumn('till', 'datetime')
