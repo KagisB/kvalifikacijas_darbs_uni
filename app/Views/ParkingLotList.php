@@ -1,14 +1,19 @@
 <?php
 ?>
 <html lang="lv">
-<div>
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.2.js"
+    integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
+    crossorigin="anonymous"></script>
+    <title>Autostāvlaukumi</title>
+</head>
+<div id="mainText">
     <p>Šeit būs saraksts ar stāvlaukumiem, un to adresēm, kā arī vietu skaitu?</p>
 </div>
-<p>Autostāvvietu saraksts: </p>
+<p id="pageTitle">Autostāvvietu saraksts: </p>
 <div id="lotList">
 
 </div>
-</html>
 <script>
     function pageLoad(){
         let xmlhttp = new XMLHttpRequest();
@@ -33,3 +38,4 @@
         xmlhttp.send();
     }
 </script>
+</html>
