@@ -25,6 +25,30 @@
     </div>
 </div>
 <script>
-
+    $(function(){
+        $.ajax({
+            url:"../Controllers/AjaxController.php",
+            async:true,
+            dataType:JSON,
+            data: "action=spaceListLoad,lotId=<?php echo $_POST['lotId'] ?>",
+            success: function(data){
+                let json = JSON.parse(data);
+                let select = document.getElementById('parkingSpaceDisplay');
+                select.innerHTML="";
+                for(let space of json){
+                    let spaceBox=$.createElement('div');
+                    spaceBox.setAttribute("class",'');
+                    spaceBox.value=space["number"];//vērtību piešķir unit id, lai var vieglāk atrast īstos routes
+                    spaceBox.id=space["id"];
+                    spaceBox.innerHTML ='Stāvvietas numurs: '.space["number"];//Nosaukumu sarakstā liek mašīnas numuru, var kaut ko citu arī likt
+                    if(space['reservation_status']){
+                        spaceBox.style.backgroundColor = 'green';
+                    }
+                    else spaceBox.style.backgroundColor = 'red';
+                    select.appendChild(spaceBox);
+                }
+            }
+        })
+    });
 </script>
 </html>

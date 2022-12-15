@@ -15,27 +15,25 @@
 
 </div>
 <script>
-    function pageLoad(){
-        let xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-
-                let object = JSON.parse(xmlhttp.responseText);
-
+    $(function(){
+        $.ajax({
+            url:"../Controllers/AjaxController.php",
+            async:true,
+            dataType:JSON,
+            data: "action=lotLoad",
+            success: function(data){
+                let json = JSON.parse(data);
                 let select = document.getElementById('lotList');
                 select.innerHTML="";
-                for(let lot of object){
-                    let button = document.createElement('button');
-                    button.value=lot["address"];//vērtību piešķir unit id, lai var vieglāk atrast īstos routes
-                    button.id=lot["id"];
-                    button.innerHTML ='Adrese: '.lot["address"].', kopējais vietu skaits: '.lot['space_count'];//Nosaukumu sarakstā liek mašīnas numuru, var kaut ko citu arī likt
-                    select.appendChild(button);
+                for(let lot of json){
+                    let lotButton=$.createElement('button');
+                    lotButton.value=lot["address"];//vērtību piešķir unit id, lai var vieglāk atrast īstos routes
+                    lotButton.id=lot["id"];
+                    lotButton.innerHTML ='Adrese: '.lot["address"].', kopējais vietu skaits: '.lot['space_count'];//Nosaukumu sarakstā liek mašīnas numuru, var kaut ko citu arī likt
+                    select.appendChild(lotButton);
                 }
             }
-        }
-        xmlhttp.open("GET", "../Controllers/mainController.php?carAction=carList", true); // Izveidot router
-        //kurš padotu kuru controller metodi izsaukt?
-        xmlhttp.send();
-    }
+        })
+    });
 </script>
 </html>

@@ -29,10 +29,11 @@ class LotController{
                     'id' => $space->id,
                     'number' => $space->number,
                     'lot_id' => $space->lot_id,
+                    'reservationStatus' => $space->reservation_status,
                 ];
             }
         }
-        return json_encode($data);;
+        return json_encode($data);
     }
 
     public function getLotList()
