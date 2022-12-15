@@ -30,7 +30,7 @@ if(!empty($_POST['name']) && !empty($_POST['password'])){
 </form>
 </html>
 <script>
-    $("#idForm").submit(function(e) {
+    $("#signInForm").submit(function(e) {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
 

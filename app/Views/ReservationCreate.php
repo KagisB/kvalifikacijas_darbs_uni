@@ -10,7 +10,7 @@
 <div>
     <p>Šeit būs input form, lai izveidou jaunu rezervāciju</p>
 </div>
-<form id="reservationCreate" method="post" action="ReservationCreate.php">
+<form id="reservationCreate" method="post" action="../Controllers/AjaxController.php">
     <label for="spaceCount">Rezervācijas sākums:</label><br>
     <input type="datetime-local" id="from" name="from"><br>
     <label for="hourlyRate">Rezervācijas beigas:</label><br>
@@ -19,6 +19,24 @@
 </form>
 <script>
     document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
+    $("#reservationCreateCreate").submit(function(e) {
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+
+        let form = $(this);
+        let actionUrl = form.attr('action');
+
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: form.serialize(), // serializes the form's elements.
+            success: function(data)
+            {
+                //redirect uz homepage/parking space view.
+            }
+        });
+
+    });
     function changeMaxMinDate(){
         /*
         Paņem min date, pieliek mēnesi klāt, ja tas ir senāk par šodienu, noliek max uz

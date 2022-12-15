@@ -14,7 +14,7 @@
 <div>
     <p>Šeit būs input form, lai izveidotu jaunu stāvlaukumu</p>
 </div>
-<form id="lotCreate" method="post" action="ParkingLotCreation.php">
+<form id="lotCreate" method="post" action="../Controllers/AjaxController.php">
     <label for="address">Adrese:</label><br>
     <input type="text" id="address" name="address" maxlength="75" minlength="5"><br>
     <label for="spaceCount">Vietu skaits stāvlaukumā:</label><br>
@@ -24,10 +24,23 @@
     <input type="submit" value="Iesniegt">
 </form>
 <script>
-    document.getElementById("lotCreate").addEventListener("submit",checkInput());
+    $("#lotCreate").submit(function(e) {
 
-    function checkInput(){
+        e.preventDefault(); // avoid to execute the actual submit of the form.
 
-    }
+        let form = $(this);
+        let actionUrl = form.attr('action');
+
+        $.ajax({
+            type: "POST",
+            url: actionUrl,
+            data: form.serialize(), // serializes the form's elements.
+            success: function(data)
+            {
+                //redirect uz homepage/parking lot list.
+            }
+        });
+
+    });
 </script>
 </html>
