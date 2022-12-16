@@ -42,6 +42,20 @@ class User{
         return $info;
     }
 
+    public function getUserIdByUsername(string $username) : ?int
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT id FROM Users WHERE username = ? LIMIT 1');
+        $query->bind_param('s', $username);
+        $query->execute();
+        $connection->close();
+        $id = null;
+        $result = $query->get_result();
+        while($row = $result->fetch_assoc()) {
+            $id = $row['id'];
+        }
+        return $id;
+    }
     public function userExists(int $user_id) : bool
     {
         /*
