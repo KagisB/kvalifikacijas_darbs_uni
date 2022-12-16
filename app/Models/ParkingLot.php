@@ -59,7 +59,7 @@ class ParkingLot{
         return $lots;
     }
 
-    public function addLot(string $address, int $numberOfSpaces, float $hourly_rate)
+    public function addLot(string $address, int $numberOfSpaces, float $hourly_rate) : bool
     {
         /*
          * pievienot stāvlaukumu datubāzē, kad stāvlaukums izveidots, izveidot stāvvietas caur
@@ -69,11 +69,12 @@ class ParkingLot{
         $query = $connection->prepare('INSERT INTO ParkingLots VALUES (?,?,?)');
         $query->bind_param('sii', $address, $numberOfSpaces, $hourly_rate);
         $query->execute();
+        $connection->close();
         if($query->result_metadata()){
             (new ParkingSpace)->addSpacesOnLotCreation($query->insert_id,$numberOfSpaces);
             return true;
         }
-        $connection->close();
+
         return false;
     }
 

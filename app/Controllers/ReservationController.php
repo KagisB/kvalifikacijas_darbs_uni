@@ -2,9 +2,11 @@
 
 namespace app\Controllers;
 
+use app\Controllers\UserController;
 use app\Models\Reservation;
 use app\Models\ParkingSpace;
 use app\Models\User;
+use Datetime;
 
 class ReservationController{
     public function createReservation() : bool
@@ -15,21 +17,33 @@ class ReservationController{
         //$_GET['user_id','space_id','from','till']
         //User id varbūt varētu iegūt no citas funkcijas, iegūt esošā lietotāja id, tas būtu efektīvāk
         //$user_id = getCurrentUserId();
-        $user_id = 1;
+        $user_id = (new UserController)->getUserId();
         $from = $_GET['from'];//potenciāli pārveidot uz datetime, ja padotais variable ir string
         $till = $_GET['till'];
         $space_id = $_GET['space_id'];
         if(!(new ParkingSpace)->spaceExists($space_id)) {
-            echo "Error: Space does not exist";
+            //echo "Error: Space does not exist";
             return false;
         }
-        if($till<$from) {
-            echo "Error: Period start is after period end";
-            return false;
+        if($_GET["from"]!=null){
+            try {
+                $from = new DateTime($_GET["from"]);
+            } catch (\Exception $e) {
+            }
+        }
+        else{
+            $from = new DateTime("now");
+            $from->modify("-1 week");
+        }
+        if($_GET["till"]!=null){
+            try {
+                $till = new DateTime($_GET["till"]);
+            } catch (\Exception $e) {
+            }
         }
         $interval = $from->diff($till);
         if($interval->d > 31) {
-            echo "Error: Period length is longer than 31 days!";
+            //echo "Error: Period length is longer than 31 days!";
             return false;
         }
         return (new Reservation())->addReservation($user_id,$space_id,$from,$till);

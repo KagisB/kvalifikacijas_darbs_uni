@@ -46,7 +46,7 @@ class LotController{
         foreach($lots as $lot) {
             $data[] = $lot;
         }
-        return json_encode($data);
+        return $data;
     }
 
     public function addLot(string $address, int $numberOfSpaces, float $hourly_rate) : bool

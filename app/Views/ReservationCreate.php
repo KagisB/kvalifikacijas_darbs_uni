@@ -10,7 +10,7 @@
 <div>
     <p>Šeit būs input form, lai izveidou jaunu rezervāciju</p>
 </div>
-<form id="reservationCreate" method="post" action="../Controllers/AjaxController.php">
+<form id="reservationCreate" method="get" action="../Controllers/AjaxController.php">
     <label for="from">Rezervācijas sākums:</label><br>
     <input type="datetime-local" id="from" name="from"><br>
     <label for="till">Rezervācijas beigas:</label><br>
@@ -24,11 +24,12 @@
         event.preventDefault(); // avoid to execute the actual submit of the form.
 
         $.ajax({
-            type: "POST",
+            type: "GET",
             url: "../Controllers/AjaxController.php",
             data: {
                 'from': $("#from").val(),
                 'till': $("#till").val(),
+                'spaceId': <?php echo $_GET['space_id'] ?>,
                 'action' : 'reservationCreate',
             },
             success: function(data)
