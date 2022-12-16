@@ -49,6 +49,21 @@
                 }
             }
         })
+        $.ajax({
+            url:"../Controllers/AjaxController.php",
+            async:true,
+            dataType:JSON,
+            data: "action=userGet",
+            success: function(data){
+                let json = JSON.parse(data);
+                let lotCreateButton = $.('$createLot');
+                for(let user of json){
+                    if(user['status'] !== null){//nomainīt uz to, ka logged in user var izveidot rezervāciju
+                        lotCreateButton.style.display = 'block';
+                    }
+                }
+            }
+        });
     });
 </script>
 </html>

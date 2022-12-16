@@ -35,17 +35,17 @@ class UserController{
         return null;
     }
 
-    public function getUserStatus() : ?int
+    public function getUserStatus() : ?array
     {
         /*
          * pārbauda kāds status ir user, 0 = parasts, 1= moderators, 2 = admin
          * */
         $user_id = $this->getUserId();
+        $userInfo = null;
         if($user_id){
-            $user = (new User())->getUserInfo($user_id);
-            return $user['status'];
+            $userInfo = (new User())->getUserInfo($user_id);
         }
-        return null;
+        return $userInfo;
     }
     public function validateSignUp()
     {
@@ -73,6 +73,7 @@ class UserController{
          * pārbaudīt, vai lietotājs ir ielogojies, vai nē.
          * */
         //Vajadzētu kaut kādu cookie/paņemt metodi no mana prakses darba.
+
     }
 
     // https://www.codexworld.com/how-to/validate-password-strength-in-php/

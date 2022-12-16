@@ -11,28 +11,29 @@
     <p>Šeit būs input form, lai izveidou jaunu rezervāciju</p>
 </div>
 <form id="reservationCreate" method="post" action="../Controllers/AjaxController.php">
-    <label for="spaceCount">Rezervācijas sākums:</label><br>
+    <label for="from">Rezervācijas sākums:</label><br>
     <input type="datetime-local" id="from" name="from"><br>
-    <label for="hourlyRate">Rezervācijas beigas:</label><br>
+    <label for="till">Rezervācijas beigas:</label><br>
     <input type="datetime-local" id="till" name="till" min="" max=""><br><br>
     <input type="submit" value="Iesniegt">
 </form>
 <script>
     document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
-    $("#reservationCreateCreate").submit(function(e) {
+    $("#reservationCreateCreate").submit(function(event) {
 
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-
-        let form = $(this);
-        let actionUrl = form.attr('action');
+        event.preventDefault(); // avoid to execute the actual submit of the form.
 
         $.ajax({
             type: "POST",
-            url: actionUrl,
-            data: form.serialize(), // serializes the form's elements.
+            url: "../Controllers/AjaxController.php",
+            data: {
+                'from': $("#from").val(),
+                'till': $("#till").val(),
+                'action' : 'reservationCreate',
+            },
             success: function(data)
             {
-                //redirect uz homepage/parking space view.
+                //redirect uz homepage, tagad logged in/signed up.
             }
         });
 

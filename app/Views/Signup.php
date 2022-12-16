@@ -20,17 +20,19 @@
     <input type="submit" value="Iesniegt">
 </form>
 <script>
-    $("#signUpForm").submit(function(e) {
+    $("#signUpForm").submit(function(event) {
 
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-
-        let form = $(this);
-        let actionUrl = form.attr('action');
+        event.preventDefault(); // avoid to execute the actual submit of the form.
 
         $.ajax({
             type: "POST",
-            url: actionUrl,
-            data: form.serialize(), // serializes the form's elements.
+            url: "../Controllers/AjaxController.php",
+            data: {
+                'username': $("#username").val(),
+                'email': $("#email").val(),
+                'password': $("#password").val(),
+                'action' : 'userSignUp',
+            },
             success: function(data)
             {
                 //redirect uz homepage, tagad logged in/signed up.

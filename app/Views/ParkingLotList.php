@@ -14,6 +14,9 @@
 <div id="lotList">
 
 </div>
+<button id="createLot" style="display:none">
+    <p>Pievienot jaunu stāvlaukumu</p>
+</button>
 <script>
     $(function(){
         $.ajax({
@@ -33,7 +36,22 @@
                     select.appendChild(lotButton);
                 }
             }
-        })
+        });
+        $.ajax({
+            url:"../Controllers/AjaxController.php",
+            async:true,
+            dataType:JSON,
+            data: "action=userGet",
+            success: function(data){
+                let json = JSON.parse(data);
+                let lotCreateButton = $.('$createLot');
+                for(let user of json){
+                    if(user['status']>0){
+                        lotCreateButton.style.display = 'block';
+                    }
+                }
+            }
+        });
     });
 </script>
 </html>

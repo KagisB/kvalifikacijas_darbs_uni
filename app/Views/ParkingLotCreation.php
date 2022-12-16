@@ -24,20 +24,22 @@
     <input type="submit" value="Iesniegt">
 </form>
 <script>
-    $("#lotCreate").submit(function(e) {
+    $("#lotCreate").submit(function(event) {
 
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-
-        let form = $(this);
-        let actionUrl = form.attr('action');
+        event.preventDefault(); // avoid to execute the actual submit of the form.
 
         $.ajax({
             type: "POST",
-            url: actionUrl,
-            data: form.serialize(), // serializes the form's elements.
+            url: "../Controllers/AjaxController.php",
+            data: {
+                'address': $("#address").val(),
+                'spaceCount': $("#spaceCount").val(),
+                'hourlyRate': $("#hourlyRate").val(),
+                'action' : 'lotCreate',
+            },
             success: function(data)
             {
-                //redirect uz homepage/parking lot list.
+                //redirect uz homepage, tagad logged in/signed up.
             }
         });
 

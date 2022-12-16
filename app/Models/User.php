@@ -34,6 +34,7 @@ class User{
         $result = $query->get_result();
         while($row = $result->fetch_assoc()) {
             $info = [
+                'id' => $id,
                 'username' => $row['username'],
                 'status' => $row['status'],
             ];

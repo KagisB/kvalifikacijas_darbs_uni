@@ -24,26 +24,27 @@ if(!empty($_POST['name']) && !empty($_POST['password'])){
     <p>Autorizācijas view.</p>
 </div>
 <form id="signInForm" method = post action = ../Controllers/AjaxController.php>
-    Username:<input type="text" name="name"><br>
-    Password:<input type="password" name="password"<br>
+    Username:<input type="text" id="name" name="name"><br>
+    Password:<input type="password" id="password" name="password"<br>
     <input type="submit" name="Log in">
 </form>
 </html>
 <script>
-    $("#signInForm").submit(function(e) {
+    $("#signInForm").submit(function(event) {
 
-        e.preventDefault(); // avoid to execute the actual submit of the form.
-
-        let form = $(this);
-        let actionUrl = form.attr('action');
+        event.preventDefault(); // avoid to execute the actual submit of the form.
 
         $.ajax({
             type: "POST",
-            url: actionUrl,
-            data: form.serialize(), // serializes the form's elements.
+            url: "../Controllers/AjaxController.php",
+            data: {
+                'username': $("#name").val(),
+                'password': $("#password").val(),
+                'action' : 'userLogIn',
+            },
             success: function(data)
             {
-                //redirect uz homepage, tagad logged in.
+                //redirect uz homepage, tagad logged in/signed up.
             }
         });
 
