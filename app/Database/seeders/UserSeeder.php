@@ -17,8 +17,8 @@ class UserSeeder extends AbstractSeed
     {
         $data = [
             [
-                'username'    => 'admin',
-                'password' => password_hash('admin',PASSWORD_BCRYPT),
+                'username'    => 'admin123',
+                'password' => password_hash('Admin123',PASSWORD_BCRYPT),
                 'email' => 'aaaabbb@gmail.com',
                 'status' => 2,
                 'created' => date('Y-m-d H:i:s'),
@@ -26,14 +26,14 @@ class UserSeeder extends AbstractSeed
         ];
 
         $users = $this->table('Users');
-        $users = $this->table('Users');
         $column = $users->hasColumn('name');
-        if (!$column) {
-            $users->insert($data)->saveData();
-        }
-        else{
-            $users->truncate();
-            $users->insert($data)->saveData();
-        }
+        /*if ($column) {
+
+        }*/
+        $this->execute('SET FOREIGN_KEY_CHECKS = 0;');
+        $users->truncate();
+        $this->execute('SET FOREIGN_KEY_CHECKS = 1;');
+
+        $users->insert($data)->saveData();
     }
 }

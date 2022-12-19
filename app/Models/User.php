@@ -1,8 +1,10 @@
 <?php
 
-namespace app\Models;
+namespace App\Models;
 
-use App\Models\DBConnection;
+require_once "../../vendor/autoload.php";
+
+use App\Models\DBConnection as DBConnection;
 
 class User{
     // Tiek pieņemts, ka lietotāja datus ir jau pārbaudījis UserController, un tie ir fine
@@ -29,9 +31,9 @@ class User{
         $query = $connection->prepare('SELECT username,status FROM Users WHERE id = ? LIMIT 1');
         $query->bind_param('i', $id);
         $query->execute();
-        $connection->close();
         $info = null;
         $result = $query->get_result();
+        $connection->close();
         while($row = $result->fetch_assoc()) {
             $info = [
                 'id' => $id,
@@ -48,9 +50,9 @@ class User{
         $query = $connection->prepare('SELECT id FROM Users WHERE username = ? LIMIT 1');
         $query->bind_param('s', $username);
         $query->execute();
-        $connection->close();
         $id = null;
         $result = $query->get_result();
+        $connection->close();
         while($row = $result->fetch_assoc()) {
             $id = $row['id'];
         }

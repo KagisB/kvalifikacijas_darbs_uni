@@ -1,8 +1,11 @@
 <?php
 
-namespace app\Models;
-use App\Models\DBConnection;
-use App\Models\ParkingSpace;
+namespace App\Models;
+
+require_once "../../vendor/autoload.php";
+
+use App\Models\DBConnection as DBConnection;
+use App\Models\ParkingSpace as ParkingSpace;
 
 class ParkingLot{
     public int $id;

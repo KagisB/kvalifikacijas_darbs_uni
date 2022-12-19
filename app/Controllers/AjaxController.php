@@ -2,16 +2,18 @@
 
 namespace App\Controllers;
 
-use app\Controllers\LoginController;
-use app\Controllers\LotController;
-use app\Controllers\ReservationController;
-use app\Controllers\SpaceController;
-use app\Controllers\UserController;
+require_once "../../vendor/autoload.php";
+
+use App\Controllers\LotController as LotController;
+use App\Controllers\ReservationController as ReservationController;
+use App\Controllers\SpaceController as SpaceController;
+use App\Controllers\UserController as UserController;
 use DateTime;
 
 $errors = [];
-$data = [];
-
+$_POST['action'] = 'userLogIn';
+$_POST['username'] = 'admin123';
+$_POST['password'] = 'Admin123';
 if(!empty($_POST['action'])){
     switch($_POST['action']){
         case 'userGet':
@@ -21,22 +23,26 @@ if(!empty($_POST['action'])){
             break;
         case 'userLogIn':
             if(isset($_POST['username']) && isset($_POST['password'])) {
-                if((new UserController)->logIn()) {
-                    echo true;
+                if((new UserController)->logIn()){
+                    echo json_encode(true);
+                    break;
                 }
                 $errors['logInDataError']="Nepareizi ievadīti lietotāja dati!";
             }
             $errors['setData']="Nav ievadīti lietotāja dati!";
-            echo json_encode($errors);
+            $jErrors = json_encode($errors);
+            echo $jErrors;
 
             break;
         case 'userSignUp':
             if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])) {
                 if((new UserController)->signUp()) {
                     echo true;
+                    break;
                 }
                 //$errors['logInDataError']="Nepareizi ievadīti lietotāja dati!";
                 echo false;
+                break;
             }
             $errors['setData']="Nav ievadīti lietotāja dati!";
             //echo json_encode($errors);
@@ -73,4 +79,5 @@ if(!empty($_POST['action'])){
             echo false;
             break;
     }
+    die();
 }

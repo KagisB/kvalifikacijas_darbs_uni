@@ -1,8 +1,10 @@
 <?php
 
-namespace app\Models;
+namespace App\Models;
 
-use App\Models\DBConnection;
+require_once "../../vendor/autoload.php";
+
+use App\Models\DBConnection as DBConnection;
 use Datetime;
 
 class Reservation{

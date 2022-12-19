@@ -1,7 +1,5 @@
 <?php
-/*
- * Iegūt datus par stāvlaukuma stāvvietām
- * */
+session_start();
 ?>
 <html lang="lv">
 <head>

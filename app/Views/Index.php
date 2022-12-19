@@ -1,5 +1,9 @@
 <?php
-
+session_start();
+/*if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
+    header ("Location: Login.php");
+    die();
+}*/
 ?>
 <html lang="lv">
 

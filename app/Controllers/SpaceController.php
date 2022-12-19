@@ -1,10 +1,11 @@
 <?php
 
-namespace app\Controllers;
+namespace App\Controllers;
 
+require_once "../../vendor/autoload.php";
 
-use app\Models\ParkingSpace;
-use app\Models\Reservation;
+use App\Models\ParkingSpace;
+use App\Models\Reservation;
 use Datetime;
 class SpaceController{
     public function getInfo(int $space_id)

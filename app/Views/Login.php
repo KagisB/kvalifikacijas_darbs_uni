@@ -1,8 +1,5 @@
 <?php
-require '../Controllers/UserController.php';
-use Router\Router;
-
-if(!empty($_POST['name']) && !empty($_POST['password'])){
+/*if(!empty($_POST['name']) && !empty($_POST['password'])){
     if($this->validateInput($_POST['name'],$_POST['password'])){
         session_start();
         $_SESSION['userlogin']=$_POST['name'];
@@ -11,7 +8,7 @@ if(!empty($_POST['name']) && !empty($_POST['password'])){
     else{
         $_SESSION['userlogin']=FALSE;
     }
-}
+}*/
 ?>
 <html lang="lv">
 <head>
@@ -24,28 +21,37 @@ if(!empty($_POST['name']) && !empty($_POST['password'])){
     <p>Autorizācijas view.</p>
 </div>
 <form id="signInForm" method = post action = ../Controllers/AjaxController.php>
-    Username:<input type="text" id="name" name="name"><br>
-    Password:<input type="password" id="password" name="password"<br>
+    Username:<input type="text" id="name" name="name" required><br>
+    Password:<input type="password" id="password" name="password" required><br>
     <input type="submit" name="Log in">
 </form>
 </html>
 <script>
-    $("#signInForm").submit(function(event) {
+    $("#signInForm").submit(function(e) {
 
-        event.preventDefault(); // avoid to execute the actual submit of the form.
-
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        let name = $("#name").val();
+        let password = $("#password").val().toString();
         $.ajax({
             type: "POST",
             url: "../Controllers/AjaxController.php",
             data: {
-                'username': $("#name").val(),
-                'password': $("#password").val(),
+                'username': name,
+                'password': password,
                 'action' : 'userLogIn',
             },
-            success: function(data)
+            dataType: "json",
+            success: function(response)
             {
-                //redirect uz homepage, tagad logged in/signed up.
-            }
+                console.log(response);
+                alert("success");
+                //window.location = 'Index.php';
+            },
+            error: function(response)
+            {
+                console.log(response);
+                alert("error")
+            },
         });
 
     });

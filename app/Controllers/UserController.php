@@ -1,8 +1,10 @@
 <?php
 
-namespace app\Controllers;
+namespace App\Controllers;
 
-use app\Models\User;
+require_once "../../vendor/autoload.php";
+
+use App\Models\User;
 use Datetime;
 
 class UserController{

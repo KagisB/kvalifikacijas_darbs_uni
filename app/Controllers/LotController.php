@@ -1,10 +1,12 @@
 <?php
 
-namespace app\Controllers;
+namespace App\Controllers;
+
+require_once "../../vendor/autoload.php";
 
 use Datetime;
-use app\Models\ParkingLot;
-use app\Models\ParkingSpace;
+use App\Models\ParkingLot;
+use App\Models\ParkingSpace;
 
 class LotController{
     public function getBusynessData(Datetime $from, Datetime $till)

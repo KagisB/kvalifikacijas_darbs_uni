@@ -1,11 +1,13 @@
 <?php
 
-namespace app\Controllers;
+namespace App\Controllers;
 
-use app\Controllers\UserController;
-use app\Models\Reservation;
-use app\Models\ParkingSpace;
-use app\Models\User;
+require_once "../../vendor/autoload.php";
+
+use App\Controllers\UserController as UserController;
+use App\Models\Reservation;
+use App\Models\ParkingSpace;
+use App\Models\User;
 use Datetime;
 
 class ReservationController{

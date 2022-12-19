@@ -2,9 +2,11 @@
 /*
  * Šeit iegūs datus no datubāzes un mainīs datubāzes datus.
  * */
-namespace app\Models;
+namespace App\Models;
 
-use app\Models\Reservation;
+require_once "../../vendor/autoload.php";
+
+use App\Models\Reservation as Reservation;
 
 class ParkingSpace{
     public int $id;

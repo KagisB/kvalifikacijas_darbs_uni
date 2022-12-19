@@ -1,6 +1,8 @@
 <?php
 
-namespace app\Models;
+namespace App\Models;
+
+require_once "../../vendor/autoload.php";
 
 use mysqli;
 use PDO;
@@ -8,10 +10,11 @@ use PDOException;
 
 class DBConnection
 {
-    private const DB_HOSTNAME = 'db';
-    private const DB_USERNAME = 'admin';
-    private const DB_PASSWORD = 'password';
-    private const DB_DATABASE = 'carPark';
+    //private const DB_HOSTNAME = 'db';
+    private const DB_HOSTNAME = '127.0.0.1';
+    private const DB_USERNAME = 'root';
+    private const DB_PASSWORD = 'root';
+    private const DB_DATABASE = 'carParking';
     private const DB_PORT = 3306;
 
     public function createMySQLiConnection() : ?mysqli

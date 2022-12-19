@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true || !isset($_SESSION['userId'])) {
+    header ("Location: Login.php");
+    die();
+}
 ?>
 <html lang="lv">
 <head>
@@ -8,15 +13,11 @@
     <title>Autostāvlaukuma izveide</title>
 </head>
 <div>
-    <p>Šeit būs input form, lai izveidou jaunu rezervāciju</p>
+    <p>Šeit būs user view, apskatīt viņa datus, iespēju nomainīt paroli?(vēlāk, ja būs laiks), iziet ārā, apskatīt rezervācijas.</p>
 </div>
-<form id="reservationCreate" method="get" action="../Controllers/AjaxController.php">
-    <label for="from">Rezervācijas sākums:</label><br>
-    <input type="datetime-local" id="from" name="from"><br>
-    <label for="till">Rezervācijas beigas:</label><br>
-    <input type="datetime-local" id="till" name="till" min="" max=""><br><br>
-    <input type="submit" value="Iesniegt">
-</form>
+<div id="userReservationList">
+
+</div>
 <script>
     document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
     $("#reservationCreateCreate").submit(function(event) {

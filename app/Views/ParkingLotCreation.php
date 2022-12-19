@@ -1,8 +1,9 @@
 <?php
-/*
- * Pārbaudīt, vai ir isset() mainīgie no form, un tad izsaukt funkciju no LotController,
- * veiksmīgas izpildes gadījumā nosūtīt uz ParkingLotList.php
- * */
+session_start();
+if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
+    header ("Location: Login.php");
+    die();
+}
 ?>
 <html lang="lv">
 <head>
