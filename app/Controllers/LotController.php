@@ -43,7 +43,7 @@ class LotController{
         /*
          * Iegūt sarakstu ar visiem stāvlaukumiem, to adresēm un vietu skaitu.
          * */
-        $data = null;
+        $data = [];
         $lots = (new ParkingLot())->getLotList();
         foreach($lots as $lot) {
             $data[] = $lot;

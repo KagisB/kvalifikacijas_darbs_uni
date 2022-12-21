@@ -31,6 +31,7 @@ class UserController{
         /*
          * Iegūt user id no $_SESSION['userId'], ja nav, tad null
          * */
+        session_start();
         if(isset($_SESSION['userId'])) {
             return $_SESSION['userId'];
         }
@@ -127,6 +128,7 @@ class UserController{
             session_start();
             $_SESSION['userId'] = $this->getUserIdFromUsername($_POST['username']);
             $_SESSION['logInStatus'] = true;
+            //session_write_close();
             return true;
         }
         return false;

@@ -1,14 +1,9 @@
 <?php
-/*if(!empty($_POST['name']) && !empty($_POST['password'])){
-    if($this->validateInput($_POST['name'],$_POST['password'])){
-        session_start();
-        $_SESSION['userlogin']=$_POST['name'];
-        Router::contentToRender();
-    }
-    else{
-        $_SESSION['userlogin']=FALSE;
-    }
-}*/
+session_start();
+if (isset($_SESSION['logInStatus']) && $_SESSION['logInStatus'] === true) {
+    header ("Location: Index.php");
+    die();
+}
 ?>
 <html lang="lv">
 <head>
@@ -43,13 +38,13 @@
             dataType: "json",
             success: function(response)
             {
-                console.log(response);
-                alert("success");
-                //window.location = 'Index.php';
+                //console.log(response);
+                //alert("success");
+                window.location = 'Index.php';
             },
             error: function(response)
             {
-                console.log(response);
+                //console.log(response);
                 alert("error")
             },
         });

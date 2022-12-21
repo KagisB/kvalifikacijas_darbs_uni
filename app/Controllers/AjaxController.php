@@ -11,14 +11,12 @@ use App\Controllers\UserController as UserController;
 use DateTime;
 
 $errors = [];
-$_POST['action'] = 'userLogIn';
-$_POST['username'] = 'admin123';
-$_POST['password'] = 'Admin123';
 if(!empty($_POST['action'])){
     switch($_POST['action']){
         case 'userGet':
             $userInfo = (new UserController)->getUserInfo();
-            echo json_encode($userInfo);
+            $userInfoJson = json_encode($userInfo);
+            echo $userInfoJson;
 
             break;
         case 'userLogIn':
@@ -59,24 +57,29 @@ if(!empty($_POST['action'])){
             break;
         case 'lotCreate':
             if(isset($_POST['address']) && isset($_POST['spaceCount']) && isset($_POST['hourlyRate'])) {
-                if(is_int($_POST['spaceCount']) && is_float($_POST['hourlyRate'])) {
-                    if((new LotController())->addLot($_POST['address'],$_POST['spaceCount'],$_POST['hourlyRate'])) {
-                        echo true;
-                    }
-                    echo false;
+                if((new LotController())->addLot($_POST['address'],$_POST['spaceCount'],$_POST['hourlyRate'])) {
+                    echo json_encode(true);
+
+                    break;
                 }
-                echo false;
+                $errors['lotCreate']="Kļūda stāvlaukuma izveidē!";
             }
-            echo false;
+            $errors['setData']="Nav ievadīti stāvlaukuma dati!";
+            $jErrors = json_encode($errors);
+            echo $jErrors;
+
             break;
         case 'reservationCreate':
             if(isset($_GET['from']) && isset($_GET['till']) && isset($_GET['spaceId'])) {
                 if((new ReservationController)->createReservation()) {
-                    echo true;
+                    echo json_encode(true);
                 }
-                echo false;
+                $errors['reservationCreate']="Kļūda rezervācijas izveidē!";
             }
-            echo false;
+            $errors['setData']="Nav ievadīti stāvlaukuma dati!";
+            $jErrors = json_encode($errors);
+            echo $jErrors;
+
             break;
     }
     die();

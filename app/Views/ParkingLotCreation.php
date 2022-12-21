@@ -21,27 +21,40 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     <label for="spaceCount">Vietu skaits stāvlaukumā:</label><br>
     <input type="number" id="spaceCount" name="spaceCount" min="1" size="5"><br>
     <label for="hourlyRate">Stundas maksa par vietu stāvlaukumā:</label><br>
-    <input type="number" id="hourlyRate" name="hourlyRate" min="0" size="5"><br><br>
+    <input type="number" id="hourlyRate" name="hourlyRate" min="0" size="5" step="0.1"><br><br>
     <input type="submit" value="Iesniegt">
 </form>
 <script>
-    $("#lotCreate").submit(function(event) {
+    $("#lotCreate").submit(function(e) {
 
-        event.preventDefault(); // avoid to execute the actual submit of the form.
-
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        let address = $("#address").val().toString();
+        let spaceCount = parseInt($("#spaceCount").val());
+        let hourlyRate = parseFloat($("#hourlyRate").val());
+        //console.log(address+" "+spaceCount+" "+hourlyRate+" ");
+        /*console.log(typeof address);
+        console.log(typeof spaceCount);
+        console.log(typeof hourlyRate);*/
         $.ajax({
             type: "POST",
             url: "../Controllers/AjaxController.php",
             data: {
-                'address': $("#address").val(),
-                'spaceCount': $("#spaceCount").val(),
-                'hourlyRate': $("#hourlyRate").val(),
+                'address': address,
+                'spaceCount': spaceCount,
+                'hourlyRate': hourlyRate,
                 'action' : 'lotCreate',
             },
-            success: function(data)
+            dataType: "json",
+            success: function(response)
             {
-                //redirect uz homepage, tagad logged in/signed up.
-            }
+                window.location = 'ParkingLotList.php';
+                //alert("success");
+            },
+            error: function(response)
+            {
+                //console.log(response);
+                alert("error");
+            },
         });
 
     });

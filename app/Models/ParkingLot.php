@@ -48,14 +48,14 @@ class ParkingLot{
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('SELECT * FROM ParkingLots');
         $query->execute();
-        $connection->close();
         $result = $query->get_result();
+        $connection->close();
         $lots = [];
         while($row = $result->fetch_assoc()) {
             $lots[] = [
                 'id' => $row['id'],
                 'address' => $row['address'],
-                'space_number' => $row['space_number'],
+                'space_count' => $row['space_count'],
                 'hourly_rate' => $row['hourly_rate'],
             ];
         }
@@ -69,8 +69,8 @@ class ParkingLot{
          * ParkingSpace model
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('INSERT INTO ParkingLots VALUES (?,?,?)');
-        $query->bind_param('sii', $address, $numberOfSpaces, $hourly_rate);
+        $query = $connection->prepare('INSERT INTO ParkingLots (address,space_count,hourly_rate) VALUES (?, ?, ?)');
+        $query->bind_param('sid', $address, $numberOfSpaces, $hourly_rate);
         $query->execute();
         $connection->close();
         if($query->result_metadata()){

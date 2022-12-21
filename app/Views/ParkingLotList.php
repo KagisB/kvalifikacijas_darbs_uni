@@ -1,5 +1,8 @@
 <?php
 session_start();
+if(isset($_SESSION['userId'])){
+    echo $_SESSION['userId'];
+}
 ?>
 <html lang="lv">
 <head>
@@ -15,41 +18,41 @@ session_start();
 <div id="lotList">
 
 </div>
-<button id="createLot" style="display:none">
-    <p>Pievienot jaunu stāvlaukumu</p>
+<button id="createLot">
+    <a href="ParkingLotCreation.php">Pievienot jaunu stāvlaukumu</a>
 </button>
 <script>
     $(function(){
         $.ajax({
+            type: "POST",
             url:"../Controllers/AjaxController.php",
             async:true,
-            dataType:JSON,
             data: "action=lotLoad",
             success: function(data){
                 let json = JSON.parse(data);
                 let select = document.getElementById('lotList');
                 select.innerHTML="";
                 for(let lot of json){
-                    let lotButton=$.createElement('button');
+                    //console.log(lot);
+                    let lotButton=document.createElement('button');
                     lotButton.value=lot["address"];//vērtību piešķir unit id, lai var vieglāk atrast īstos routes
                     lotButton.id=lot["id"];
-                    lotButton.innerHTML ='Adrese: '.lot["address"].', kopējais vietu skaits: '.lot['space_count'];//Nosaukumu sarakstā liek mašīnas numuru, var kaut ko citu arī likt
+                    lotButton.innerHTML ='Adrese: '+lot["address"]+', kopējais vietu skaits: '+lot['space_count'];//Nosaukumu sarakstā liek mašīnas numuru, var kaut ko citu arī likt
                     select.appendChild(lotButton);
                 }
             }
         });
         $.ajax({
+            type: "POST",
             url:"../Controllers/AjaxController.php",
             async:true,
-            dataType:JSON,
             data: "action=userGet",
             success: function(data){
-                let json = JSON.parse(data);
-                let lotCreateButton = $.('$createLot');
-                for(let user of json){
-                    if(user['status']>0){
-                        lotCreateButton.style.display = 'block';
-                    }
+                //console.log(data);
+                let user = JSON.parse(data);
+                //console.log(user);
+                if(user.status>0){
+                    document.getElementById("createLot").style.visibility="visible";
                 }
             }
         });

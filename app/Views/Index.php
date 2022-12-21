@@ -4,9 +4,17 @@ session_start();
     header ("Location: Login.php");
     die();
 }*/
+if(isset($_SESSION['userId'])){
+    echo $_SESSION['userId'];
+}
 ?>
 <html lang="lv">
-
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.2.js"
+            integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
+            crossorigin="anonymous"></script>
+    <title>Home</title>
+</head>
 <div id="Intro">
     <p>Sveicināti autostāvietu rezervācijas sistēmā.</p>
 </div>
@@ -15,6 +23,9 @@ session_start();
 </button>
 <button type="button" id="signUp">
     <h3>Sign up</h3>
+</button>
+<button type="button" id="logOut">
+    <h3>Log out</h3>
 </button>
 <button type="button" id="temp1">
     <h3>Temporary poga priekš citiem page testing1 lotlist</h3>
@@ -53,4 +64,26 @@ function parkingSpaceOverview(){
 function reservationCreate(){
     window.location.href = "ReservationCreate.php";
 }
+    $("#logOut").click(function() {
+        $.ajax({
+            type: "POST",
+            url: "../Controllers/AjaxController.php",
+            data: {
+                'action' : 'userLogOut',
+            },
+            dataType: "json",
+            success: function(response)
+            {
+                //console.log(response);
+                //alert("success");
+                location.reload();
+            },
+            error: function(response)
+            {
+                //console.log(response);
+                alert("error")
+            },
+        });
+
+    });
 </script>
