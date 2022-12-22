@@ -26,6 +26,8 @@ if(!empty($_POST['action'])){
                     break;
                 }
                 $errors['logInDataError']="Nepareizi ievadīti lietotāja dati!";
+                $jErrors = json_encode($errors);
+                echo $jErrors;
             }
             $errors['setData']="Nav ievadīti lietotāja dati!";
             $jErrors = json_encode($errors);
@@ -35,18 +37,18 @@ if(!empty($_POST['action'])){
         case 'userSignUp':
             if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])) {
                 if((new UserController)->signUp()) {
-                    echo true;
+                    echo json_encode(true);
                     break;
                 }
-                //$errors['logInDataError']="Nepareizi ievadīti lietotāja dati!";
-                echo false;
-                break;
+                $errors['logInDataError']="Nepareizi ievadīti lietotāja dati!";
+                $jErrors = json_encode($errors);
+                echo $jErrors;
             }
             $errors['setData']="Nav ievadīti lietotāja dati!";
             //echo json_encode($errors);
-            echo false;
+            $jErrors = json_encode($errors);
 
-            break;
+            echo $jErrors;
         case 'userLogOut':
             echo json_encode((new UserController)->logOut());
 
@@ -69,6 +71,18 @@ if(!empty($_POST['action'])){
             echo $jErrors;
 
             break;
+        case 'spaceLoad':
+            if(isset($_GET['lotId'])){
+
+            }
+
+            break;
+        case 'spaceInfo':
+            if(isset($_GET['spaceId'])){
+
+            }
+
+            break;
         case 'reservationCreate':
             if(isset($_GET['from']) && isset($_GET['till']) && isset($_GET['spaceId'])) {
                 if((new ReservationController)->createReservation()) {
@@ -82,5 +96,4 @@ if(!empty($_POST['action'])){
 
             break;
     }
-    die();
 }

@@ -1,32 +1,15 @@
 <?php
 session_start();
-/*if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
-    header ("Location: Login.php");
-    die();
-}*/
+
+include ('Header.php');
+$isLoggedIn = false;
 if(isset($_SESSION['userId'])){
-    echo $_SESSION['userId'];
+    $isLoggedIn = true;
 }
 ?>
-<html lang="lv">
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.2.js"
-            integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
-            crossorigin="anonymous"></script>
-    <title>Home</title>
-</head>
-<div id="Intro">
+<div id="Intro" class="container">
     <p>Sveicināti autostāvietu rezervācijas sistēmā.</p>
 </div>
-<button type="button" id="signIn">
-    <h3>Sign in</h3>
-</button>
-<button type="button" id="signUp">
-    <h3>Sign up</h3>
-</button>
-<button type="button" id="logOut">
-    <h3>Log out</h3>
-</button>
 <button type="button" id="temp1">
     <h3>Temporary poga priekš citiem page testing1 lotlist</h3>
 </button>
@@ -40,18 +23,10 @@ if(isset($_SESSION['userId'])){
     <h3>Temporary poga priekš citiem page testing4 reservationCreate</h3>
 </button>
 <script>
-    document.getElementById("signIn").addEventListener("click",signInButton,false);
-    document.getElementById("signUp").addEventListener("click",signUpButton,false);
     document.getElementById("temp1").addEventListener("click",parkingLotList,false);
     document.getElementById("temp2").addEventListener("click",parkingLotCreate,false);
     document.getElementById("temp3").addEventListener("click",parkingSpaceOverview,false);
     document.getElementById("temp4").addEventListener("click",reservationCreate,false);
-function signUpButton(){
-    window.location.href = "Signup.php";
-}
-function signInButton(){
-    window.location.href ="Login.php";
-}
 function parkingLotList(){
     window.location.href = "ParkingLotList.php";
 }
@@ -64,26 +39,53 @@ function parkingSpaceOverview(){
 function reservationCreate(){
     window.location.href = "ReservationCreate.php";
 }
-    $("#logOut").click(function() {
-        $.ajax({
+    $(function(){
+        let test = $('#logOut');
+        if(test){
+            alert("poga eksistē");
+        }
+        else alert ("poga neeksistē");
+        let userLoggedIn = JSON.parse(<?php echo json_encode($isLoggedIn); ?>);
+        if(userLoggedIn){
+            $('#logIn').removeClass(" visible").addClass(" invisible");
+            $('#logOut').removeClass(" invisible").addClass(" visible");
+            $('#userProfile').removeClass(" invisible").addClass(" visible");
+        }
+        /*$.ajax({
             type: "POST",
-            url: "../Controllers/AjaxController.php",
-            data: {
-                'action' : 'userLogOut',
-            },
-            dataType: "json",
-            success: function(response)
-            {
-                //console.log(response);
-                //alert("success");
-                location.reload();
-            },
-            error: function(response)
-            {
-                //console.log(response);
-                alert("error")
-            },
-        });
+            url:"../Controllers/AjaxController.php",
+            async:true,
+            data: "action=userGet",
+            success: function(data){
+                //console.log(data);
+                let user = JSON.parse(data);
+                //console.log(user);
+                if(user.status>0){
+                    document.getElementById("createLot").style.visibility="visible";
+                }
+            }
+        });*/
+        $("#logOut").click(function() {
+            $.ajax({
+                type: "POST",
+                url: "../Controllers/AjaxController.php",
+                data: {
+                    'action' : 'userLogOut',
+                },
+                dataType: "json",
+                success: function(response)
+                {
+                    //console.log(response);
+                    //alert("success");
+                    location.reload();
+                },
+                error: function(response)
+                {
+                    //console.log(response);
+                    alert("error")
+                },
+            });
 
+        });
     });
 </script>

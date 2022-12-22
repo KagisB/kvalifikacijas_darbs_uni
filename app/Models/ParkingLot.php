@@ -72,12 +72,12 @@ class ParkingLot{
         $query = $connection->prepare('INSERT INTO ParkingLots (address,space_count,hourly_rate) VALUES (?, ?, ?)');
         $query->bind_param('sid', $address, $numberOfSpaces, $hourly_rate);
         $query->execute();
-        $connection->close();
-        if($query->result_metadata()){
+        if($query->affected_rows !== 0){
             (new ParkingSpace)->addSpacesOnLotCreation($query->insert_id,$numberOfSpaces);
+            $connection->close();
             return true;
         }
-
+        $connection->close();
         return false;
     }
 

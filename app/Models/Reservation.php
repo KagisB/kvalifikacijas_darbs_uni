@@ -15,8 +15,8 @@ class Reservation{
     public Datetime $till;
     public string $reservation_code;
 
-    public function __construct(?int $id = 0, ?int $user_id = 0, ?int $space_id = 0, ?Datetime $from = null,
-                                ?Datetime $till = null, ?string $reservation_code = '')
+    public function __construct(?int $id = 0, ?int $user_id = 0, ?int $space_id = 0, ?Datetime $from = new Datetime('now'),
+                                ?Datetime $till = new Datetime('now'), ?string $reservation_code = '')
     {
         $this->id = $id;
         $this->user_id = $user_id;
@@ -154,7 +154,7 @@ class Reservation{
         $sql = <<<MySQL
             SELECT id FROM Reservations 
             WHERE space_id = :space_id
-            AND (from < :timeNow AND till > :timeNow)
+            AND ('from' < :timeNow AND 'till' > :timeNow)
         MySQL;
         $timeNow = date('Y-m-d H:i:s',$timeNow->getTimestamp());
         $params = [

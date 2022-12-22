@@ -7,6 +7,7 @@ namespace App\Models;
 require_once "../../vendor/autoload.php";
 
 use App\Models\Reservation as Reservation;
+use DateTime;
 
 class ParkingSpace{
     public int $id;
@@ -68,7 +69,7 @@ class ParkingSpace{
          * no datubāzes, ja ir rezervēts laika periodā, atgriezt true
          * Iesaistīt Reservation tabulu/modeli
          * */
-        $timeNow = new \DateTime('now');
+        $timeNow = new DateTime('now');
         return (new Reservation)->checkSpaceReservation($id,$timeNow);
     }
 
@@ -111,7 +112,7 @@ class ParkingSpace{
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
         for($i = 1; $i <= $number_of_spaces; $i++){
-            $query = $connection->prepare('INSERT INTO ParkingSpaces VALUES (?,?)');
+            $query = $connection->prepare('INSERT INTO ParkingSpaces (lot_id,number) VALUES (?,?)');
             $query->bind_param('ii', $lot_id, $i);
             $query->execute();
         }
