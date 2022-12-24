@@ -1,23 +1,21 @@
 <?php
 session_start();
-if(isset($_SESSION['userId'])){
+include ('Header.php');
+/*if(isset($_SESSION['userId'])){
     echo $_SESSION['userId'];
-}
+}*/
 ?>
-<html lang="lv">
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.2.js"
-    integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
-    crossorigin="anonymous"></script>
-    <title>Autostāvlaukumi</title>
-</head>
+
 <div id="mainText">
     <p>Šeit būs saraksts ar stāvlaukumiem, un to adresēm, kā arī vietu skaitu?</p>
 </div>
 <p id="pageTitle">Autostāvvietu saraksts: </p>
-<div id="lotList">
+<div id="lotList2">
 
 </div>
+<form  id="lotList" action="ParkingSpaceOverview.php" method="get">
+
+</form>
 <button id="createLot">
     <a href="ParkingLotCreation.php">Pievienot jaunu stāvlaukumu</a>
 </button>
@@ -32,16 +30,23 @@ if(isset($_SESSION['userId'])){
                 let json = JSON.parse(data);
                 let select = document.getElementById('lotList');
                 select.innerHTML="";
+                console.log(typeof json);
                 for(let lot of json){
                     //console.log(lot);
                     let lotButton=document.createElement('button');
-                    lotButton.value=lot["address"];//vērtību piešķir unit id, lai var vieglāk atrast īstos routes
+                    lotButton.value=lot["id"];
                     lotButton.id=lot["id"];
+                    lotButton.type="submit";
+                    lotButton.name="lotId";
                     lotButton.innerHTML ='Adrese: '+lot["address"]+', kopējais vietu skaits: '+lot['space_count'];//Nosaukumu sarakstā liek mašīnas numuru, var kaut ko citu arī likt
+                   /* $('#lotList').on('click','#'+lot["id"]+'',function(
+
+                    ));*/
                     select.appendChild(lotButton);
                 }
             }
         });
+
         $.ajax({
             type: "POST",
             url:"../Controllers/AjaxController.php",

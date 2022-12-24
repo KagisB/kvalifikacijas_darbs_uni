@@ -4,22 +4,32 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true || !is
     header ("Location: Login.php");
     die();
 }
+include ('Header.php');
 ?>
-<html lang="lv">
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.2.js"
-            integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
-            crossorigin="anonymous"></script>
-    <title>Autostāvlaukuma izveide</title>
-</head>
 <div>
-    <p>Šeit būs user view, apskatīt viņa datus, iespēju nomainīt paroli?(vēlāk, ja būs laiks), iziet ārā, apskatīt rezervācijas.</p>
+    <p>Šeit varēs izveidot rezervāciju</p>
 </div>
 <div id="userReservationList">
 
 </div>
 <script>
     document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
+    let loggedIn = false;
+    $.ajax({
+        type: "POST",
+        url:"../Controllers/AjaxController.php",
+        async:true,
+        data: "action=userGet",
+        success: function(data){
+            let user = JSON.parse(data);
+            if(user.status>0){
+                loggedIn = true;
+                $('#logIn').removeClass(" visible").addClass(" invisible");
+                $('#logOut').removeClass(" invisible").addClass(" visible");
+                $('#userProfile').removeClass(" invisible").addClass(" visible");
+            }
+        }
+    });
     $("#reservationCreateCreate").submit(function(event) {
 
         event.preventDefault(); // avoid to execute the actual submit of the form.

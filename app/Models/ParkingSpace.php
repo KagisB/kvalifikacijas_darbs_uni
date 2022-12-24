@@ -33,13 +33,13 @@ class ParkingSpace{
         $connection->close();
         return $query;
     }
-    public function getSpaceIdsFromLotId(int $lot_id) : array
+    public function getSpaceIdsFromLotId(int $lot_id) : ?array
     {
         /*
          * do query in database where it returns all space ids that belong to the lot
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('SELECT id FROM ParkingSpaces WHERE id = ?'); // sort by number i guess?
+        $query = $connection->prepare('SELECT id FROM ParkingSpaces WHERE lot_id = ?'); // sort by number i guess?
         $query->bind_param('i', $lot_id);
         $query->execute();
         $result = $query->get_result();
@@ -97,9 +97,9 @@ class ParkingSpace{
         $query->bind_param('i', $space_id);
         $query->execute();
         $result = $query->get_result();
-        $row = $result->fetch_all();
-        if($row){
-            return new ParkingSpace($row['id'],$row['number'],$row['lot_id']);
+        $connection->close();
+        while($row = $result->fetch_assoc()) {
+            return new ParkingSpace($row['lot_id'],$row['id'],$row['number']);
         }
         return null;
     }

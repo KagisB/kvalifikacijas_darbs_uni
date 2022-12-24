@@ -35,7 +35,7 @@ class LotController{
                 ];
             }
         }
-        return json_encode($data);
+        return $data;
     }
 
     public function getLotList()

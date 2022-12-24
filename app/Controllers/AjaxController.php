@@ -11,6 +11,8 @@ use App\Controllers\UserController as UserController;
 use DateTime;
 
 $errors = [];
+/*$_POST['action']='spaceLoad';
+$_POST['lotId']=8;*/
 if(!empty($_POST['action'])){
     switch($_POST['action']){
         case 'userGet':
@@ -72,9 +74,14 @@ if(!empty($_POST['action'])){
 
             break;
         case 'spaceLoad':
-            if(isset($_GET['lotId'])){
+            if(isset($_POST['lotId'])){
+                echo json_encode((new LotController())->getSpaces($_POST['lotId']));
 
+                break;
             }
+            $errors['setData']="Stāvlaukuma id nav padots";
+            $jErrors = json_encode($errors);
+            echo $jErrors;
 
             break;
         case 'spaceInfo':

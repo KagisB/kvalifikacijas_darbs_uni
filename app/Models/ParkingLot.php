@@ -28,7 +28,7 @@ class ParkingLot{
         $query->bind_param('i', $id);
         $query->execute();
         $connection->close();
-        return $query;
+        return ($query) ? true : false;
     }
 
     public function getLot(int $id) : ?ParkingLot
