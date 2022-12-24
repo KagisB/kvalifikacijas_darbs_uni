@@ -40,31 +40,12 @@ function reservationCreate(){
     window.location.href = "ReservationCreate.php";
 }
     $(function(){
-        let test = $('#logOut');
-        if(test){
-            alert("poga eksistē");
-        }
-        else alert ("poga neeksistē");
-        let userLoggedIn = JSON.parse(<?php echo json_encode($isLoggedIn); ?>);
+        /*let userLoggedIn = JSON.parse(<?php //echo json_encode($isLoggedIn); ?>);
         if(userLoggedIn){
             $('#logIn').removeClass(" visible").addClass(" invisible");
             $('#logOut').removeClass(" invisible").addClass(" visible");
             $('#userProfile').removeClass(" invisible").addClass(" visible");
-        }
-        /*$.ajax({
-            type: "POST",
-            url:"../Controllers/AjaxController.php",
-            async:true,
-            data: "action=userGet",
-            success: function(data){
-                //console.log(data);
-                let user = JSON.parse(data);
-                //console.log(user);
-                if(user.status>0){
-                    document.getElementById("createLot").style.visibility="visible";
-                }
-            }
-        });*/
+        }*/
         $("#logOut").click(function() {
             $.ajax({
                 type: "POST",
@@ -75,13 +56,10 @@ function reservationCreate(){
                 dataType: "json",
                 success: function(response)
                 {
-                    //console.log(response);
-                    //alert("success");
                     location.reload();
                 },
                 error: function(response)
                 {
-                    //console.log(response);
                     alert("error")
                 },
             });
