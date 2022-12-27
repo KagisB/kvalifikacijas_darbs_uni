@@ -11,8 +11,11 @@ use App\Controllers\UserController as UserController;
 use DateTime;
 
 $errors = [];
-/*$_POST['action']='spaceLoad';
-$_POST['lotId']=8;*/
+/*$_POST['action']='reservationCreate';
+$_POST['userId']=1;
+$_POST['spaceId']=21;
+$_POST['from']="27-12-2022 21:25:20";
+$_POST['till']="28-12-2022 12:22:23";*/
 if(!empty($_POST['action'])){
     switch($_POST['action']){
         case 'userGet':
@@ -91,11 +94,17 @@ if(!empty($_POST['action'])){
 
             break;
         case 'reservationCreate':
-            if(isset($_GET['from']) && isset($_GET['till']) && isset($_GET['spaceId'])) {
-                if((new ReservationController)->createReservation()) {
+            if(isset($_POST['from']) && isset($_POST['till']) && isset($_POST['spaceId']) && isset($_POST['userId'])) {
+                if((new ReservationController)->createReservation($_POST['userId'],$_POST['spaceId'],$_POST['from'],$_POST['till'])) {
                     echo json_encode(true);
+
+                    break;
                 }
                 $errors['reservationCreate']="Kļūda rezervācijas izveidē!";
+                $jErrors = json_encode($errors);
+                echo $jErrors;
+
+                break;
             }
             $errors['setData']="Nav ievadīti stāvlaukuma dati!";
             $jErrors = json_encode($errors);

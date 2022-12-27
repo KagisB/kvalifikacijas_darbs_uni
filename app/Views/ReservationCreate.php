@@ -1,81 +1,88 @@
 <?php
 session_start();
-if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true || !isset($_SESSION['userId'])) {
+if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     header ("Location: Login.php");
     die();
 }
 include ('Header.php');
+/*
+ * Izveidot input, lai ņem visas rezervācijas mēneša laikā, un neļauj ievadīt laikus, kas neiekļaujas brīvajos laikos.
+ * Vajadzētu limitēt laikus ,tas ir, intervāli būtu ik pa pusstundai,stundai utt. Jo citādāk nevarēs izmantot plugins/citas lietas.
+ * https://github.com/jannicz/appointment-picker#readme
+ * */
 ?>
 <div>
     <p>Šeit varēs izveidot rezervāciju</p>
 </div>
 <div id="userReservationList">
-
+    <form id="reservationCreate" method="post" action="../Controllers/AjaxController.php">
+        <label for="from">Rezervācijas sākums:</label><br>
+        <input type="datetime-local" id="from" name="from" min="" max=""><br>
+        <label for="till">Rezervācijas beigas:</label><br>
+        <input type="datetime-local" id="till" name="till" min="" max=""><br><br>
+        <input type="submit" value="Rezervēt">
+    </form>
 </div>
 <script>
-    document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
-    let loggedIn = false;
-    $.ajax({
-        type: "POST",
-        url:"../Controllers/AjaxController.php",
-        async:true,
-        data: "action=userGet",
-        success: function(data){
-            let user = JSON.parse(data);
-            if(user.status>0){
-                loggedIn = true;
-                $('#logIn').removeClass(" visible").addClass(" invisible");
-                $('#logOut').removeClass(" invisible").addClass(" visible");
-                $('#userProfile').removeClass(" invisible").addClass(" visible");
-            }
-        }
-    });
-    $("#reservationCreateCreate").submit(function(event) {
+    //document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
+    $(function() {
+        setMaxMinDate();
+        document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
+        $("#reservationCreate").submit(function (e) {
 
-        event.preventDefault(); // avoid to execute the actual submit of the form.
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+            let fromValue = $("#from").val().toString();
+            let tillValue = $("#till").val().toString();
+            //console.log(fromValue + "  " + tillValue);
+            let from = returnDateString(new Date(fromValue));
+            let till = returnDateString(new Date(tillValue));
+            let spaceId = JSON.parse(<?php echo json_encode($_GET['spaceId']);?>);
+            let userId = JSON.parse(<?php echo json_encode($_GET['userId']);?>);
+            //console.log(from+","+till+","+spaceId+","+userId)
+            $.ajax({
+                type: "POST",
+                url: "../Controllers/AjaxController.php",
+                data: {
+                    'from': from,
+                    'till': till,
+                    'spaceId': spaceId,
+                    'userId': userId,
+                    'action': 'reservationCreate',
+                },
+                dataType: "json",
+                success: function (response) {
+                    //console.log(response);
+                    let lotId=JSON.parse(<?php echo json_encode($_GET['lotId']); ?>);
+                    window.location = 'ParkingSpaceOverview.php?lotId='+lotId;
+                    //alert("success");
+                },
+                error: function (response) {
+                    //console.log(response);
+                    alert("error");
+                },
+            });
 
-        $.ajax({
-            type: "GET",
-            url: "../Controllers/AjaxController.php",
-            data: {
-                'from': $("#from").val(),
-                'till': $("#till").val(),
-                'spaceId': <?php echo $_GET['space_id'] ?>,
-                'action' : 'reservationCreate',
-            },
-            success: function(data)
-            {
-                //redirect uz homepage, tagad logged in/signed up.
-            }
         });
-
     });
+    function setMaxMinDate(){
+        let today = new Date();
+        let todayString = returnDateString(today);
+        let till = new Date();
+        till.setMonth(till.getMonth()+1);
+        let tillString = returnDateString(till);
+        document.getElementById("from").setAttribute("min", todayString);
+        document.getElementById("from").setAttribute("max", tillString);
+        document.getElementById("till").setAttribute("min", todayString);
+        document.getElementById("till").setAttribute("max", tillString);
+    }
     function changeMaxMinDate(){
         /*
-        Paņem min date, pieliek mēnesi klāt, ja tas ir senāk par šodienu, noliek max uz
-        to datumu. Arī pie reizes uzliek min vērtību, kas ir vienāda ar from datumu.
+        Potenciāla funkcija, lai dinamiski atjaunotu atļauto maksimālo vērtību rezervācijas gala datumam,
+        ja rezervāciju ļauj veikt vairāk kā mēnesi uz priekšu
          */
         let minDate = new Date(document.getElementById("from").value);
-        let today = returnDateString(minDate);
-        document.getElementById("till").min=today;
-        let newDate = minDate;
-        newDate.setMonth(newDate.getMonth()+1);
-        let currentDate = new Date();
-        //nomainīt, ka funkcija nosaka max date mēnesi uz priekšu? vai dienu uz priekšu no esošā datuma
-        //also vajadzētu iegūt rezervācijas, lai pateiktu, vai tas laiks ir pieejams, vai nē
-        if(newDate<currentDate){
-            today=returnDateString(newDate);
-            document.getElementById("till").max=today;
-            document.getElementById("till").value=today;
-        }
-        else{
-            today=returnDateString(currentDate);
-            document.getElementById("till").max=today;
-            minDate.setMonth(minDate.getMonth()-1);
-            if(minDate>new Date(document.getElementById("till").value)){
-                document.getElementById("till").value=returnDateString(minDate);
-            }
-        }
+        let minDateString = returnDateString(minDate);
+        document.getElementById("till").setAttribute("min", minDateString);
     }
 
     function returnDateString(currentDate){

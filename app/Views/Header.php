@@ -23,7 +23,6 @@
     </div>
 </section>
 <script>
-    let loggedIn = false;
     $(function(){
         $.ajax({
             type: "POST",
@@ -34,7 +33,6 @@
                 let user = JSON.parse(data);
                 if(user){
                     if(user.status>0){
-                        loggedIn = true;
                         $('#logIn').removeClass(" visible").addClass(" invisible");
                         $('#logOut').removeClass(" invisible").addClass(" visible");
                         $('#userProfile').removeClass(" invisible").addClass(" visible");

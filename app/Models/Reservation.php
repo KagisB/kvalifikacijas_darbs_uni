@@ -26,20 +26,26 @@ class Reservation{
         $this->reservation_code = $reservation_code;
     }
 
-    public function addReservation(int $user_id, int $space_id, Datetime $from, Datetime $till) : bool
+    public function addReservation(int $user_id, int $space_id, string $from, string $till) : bool
     {
         /*
          * Izveidot rezervāciju no padotajiem datiem
          * */
+        if($this->checkSpaceReservationBeforeCreation($space_id,$from,$till)){
+            return false;
+        }
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('INSERT INTO Reservations VALUES (?,?,?,?,?)');
+        $query = $connection->prepare('INSERT INTO Reservations (`user_id`,`space_id`,`from`,`till`,`reservation_code`) VALUES (?,?,?,?,?)');
         $code = $this->generateRandomString();
-        $timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
-        $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
-        $query->bind_param('iisss', $user_id, $space_id, $timeFrom, $timeTill, $code);
+        //$timeFrom = date('Y-m-d H:i:s',strtotime($from));
+        //$timeTill = date('Y-m-d H:i:s',strtotime($till));
+        $query->bind_param('iisss', $user_id, $space_id, $from, $till, $code);
         $query->execute();
         $connection->close();
-        return $query;
+        if($query){
+            return true;
+        }
+        return false;
     }
 
     public function getReservationIdsByUserId(int $user_id, Datetime $from, Datetime $till) : array
@@ -51,9 +57,9 @@ class Reservation{
         $sql = <<<MySQL
             SELECT id FROM Reservations 
             WHERE user_id = :user_id
-            AND (from < :timeFrom AND till < :timeTill)
-            OR (from > :timeFrom AND till < :timeTill)
-            OR (from > :timeFrom AND till > :timeTill)
+            AND (`from` < :timeFrom AND till < :timeTill)
+            OR (`from` > :timeFrom AND till < :timeTill)
+            OR (`from` > :timeFrom AND till > :timeTill)
         MySQL;
         $timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
         $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
@@ -108,9 +114,9 @@ class Reservation{
         $sql = <<<MySQL
             SELECT * FROM Reservations 
             WHERE space_id = :space_id
-            AND (from < :timeFrom AND till < :timeTill)
-            OR (from > :timeFrom AND till < :timeTill)
-            OR (from > :timeFrom AND till > :timeTill)
+            AND (`from` < :timeFrom AND till < :timeTill)
+            OR (`from` > :timeFrom AND till < :timeTill)
+            OR (`from` > :timeFrom AND till > :timeTill)
         MySQL;
         $timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
         $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
@@ -154,12 +160,37 @@ class Reservation{
         $sql = <<<MySQL
             SELECT id FROM Reservations 
             WHERE space_id = :space_id
-            AND ('from' < :timeNow AND 'till' > :timeNow)
+            AND (`from` < :timeNow AND 'till' > :timeNow)
         MySQL;
         $timeNow = date('Y-m-d H:i:s',$timeNow->getTimestamp());
         $params = [
             'space_id' => $space_id,
             'timeNow' => $timeNow,
+        ];
+        $query = $connection->prepare($sql);
+        $query->execute($params);
+        $results = $query->fetchAll();
+        $connection=null;
+        if(empty($results)){
+            return false;
+        }
+        return true;
+    }
+
+    public function checkSpaceReservationBeforeCreation(int $space_id, string $from, string $till) :bool
+    {
+        $connection = (new DBConnection())->createPDOConnection();
+        $sql = <<<MySQL
+            SELECT id FROM Reservations 
+            WHERE space_id = :space_id
+            AND (`from` < :from AND 'till' < :till)
+            OR (`from` > :from AND 'till' < :till)
+            OR (`from` > :from AND 'till' > :till)
+        MySQL;
+        $params = [
+            'space_id' => $space_id,
+            'from' => $from,
+            'till' => $till,
         ];
         $query = $connection->prepare($sql);
         $query->execute($params);

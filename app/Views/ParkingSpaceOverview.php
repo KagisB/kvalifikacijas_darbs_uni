@@ -104,6 +104,11 @@ include ('Header.php');
             submitButtonReservation.type="submit";
             submitButtonReservation.value="Rezervēt";
 
+            let lotIdInput = document.createElement('input');
+            lotIdInput.name="lotId";
+            lotIdInput.value= JSON.parse(<?php echo json_encode($_GET['lotId']); ?>);
+            lotIdInput.type="hidden";
+
             let logInReminder = document.createElement('p');
             let logInReminderText = document.createTextNode("Lai rezervētu, jāielogojas");
             logInReminder.appendChild(logInReminderText);
@@ -111,7 +116,8 @@ include ('Header.php');
 
             redirectForm.appendChild(userIdInput);
             redirectForm.appendChild(spaceIdInput);
-            if(loggedIn){
+            let logInStatus= JSON.parse(<?php echo json_encode($_SESSION['logInStatus']);?>);
+            if(logInStatus){
                 redirectForm.appendChild(submitButtonReservation);
             }
             else{

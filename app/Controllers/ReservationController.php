@@ -11,44 +11,19 @@ use App\Models\User;
 use Datetime;
 
 class ReservationController{
-    public function createReservation() : bool
+    public function createReservation(int $userId, int $spaceId, string $from, string $till) : bool
     {
         /*
          * Pārveidot esošos datus no lietotāja un izveidot rezervāciju
          * */
-        //$_GET['user_id','space_id','from','till']
-        //User id varbūt varētu iegūt no citas funkcijas, iegūt esošā lietotāja id, tas būtu efektīvāk
-        //$user_id = getCurrentUserId();
-        $user_id = (new UserController)->getUserId();
-        $from = $_GET['from'];//potenciāli pārveidot uz datetime, ja padotais variable ir string
-        $till = $_GET['till'];
-        $space_id = $_GET['space_id'];
-        if(!(new ParkingSpace)->spaceExists($space_id)) {
-            //echo "Error: Space does not exist";
-            return false;
+        $user_id = $userId;
+        $space_id = $spaceId;
+        if($this->validateInput($spaceId, $from, $till)){
+            $fromDate = date('Y-m-d H:i:s',strtotime($from));
+            $tillDate = date('Y-m-d H:i:s',strtotime($till));
+            return (new Reservation())->addReservation($user_id,$space_id,$fromDate,$tillDate);
         }
-        if($_GET["from"]!=null){
-            try {
-                $from = new DateTime($_GET["from"]);
-            } catch (\Exception $e) {
-            }
-        }
-        else{
-            $from = new DateTime("now");
-            $from->modify("-1 week");
-        }
-        if($_GET["till"]!=null){
-            try {
-                $till = new DateTime($_GET["till"]);
-            } catch (\Exception $e) {
-            }
-        }
-        $interval = $from->diff($till);
-        if($interval->d > 31) {
-            //echo "Error: Period length is longer than 31 days!";
-            return false;
-        }
-        return (new Reservation())->addReservation($user_id,$space_id,$from,$till);
+        return false;
     }
 
     public function showSpaceReservations()
@@ -111,5 +86,39 @@ class ReservationController{
             $data[] = $reservation;
         }
         return $data;
+    }
+
+    public function validateInput(int $userId, string $from, string $till) :bool
+    {
+        try{
+            $fromDate = new Datetime($from);
+        } catch (\Exception $e) {
+            $fromDate = new Datetime('now');
+        }
+        try {
+            $tillDate = new Datetime($till);
+        } catch (\Exception $e) {
+            $tillDate = new Datetime('now');
+        }
+        if(!(new User)->userExists($userId)) {
+            //echo "Error: Space does not exist";
+            return false;
+        }
+        if(!date('Y-m-d H:i:s',strtotime($from))){
+            return false;
+        }
+        if(!date('Y-m-d H:i:s',strtotime($from))){
+            return false;
+        }
+        if($tillDate<$fromDate || $tillDate===$fromDate) {
+            //echo "Error: Period start is after period end";
+            return false;
+        }
+        $interval = $fromDate->diff($tillDate);
+        if($interval->d > 31) {
+            //echo "Error: Period length is longer than 31 days!";
+            return false;
+        }
+        return true;
     }
 }
