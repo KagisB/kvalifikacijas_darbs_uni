@@ -4,6 +4,7 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     header ("Location: Login.php");
     die();
 }
+echo $_POST['lotId'];
 include ('Header.php');
 /*
  * Izveidot input, lai ņem visas rezervācijas mēneša laikā, un neļauj ievadīt laikus, kas neiekļaujas brīvajos laikos.
@@ -26,7 +27,9 @@ include ('Header.php');
 <script>
     //document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
     $(function() {
-        setMaxMinDate();
+        if(document.getElementById("from").value===""){
+            setMaxMinDate();
+        }
         document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
         $("#reservationCreate").submit(function (e) {
 
@@ -36,8 +39,8 @@ include ('Header.php');
             //console.log(fromValue + "  " + tillValue);
             let from = returnDateString(new Date(fromValue));
             let till = returnDateString(new Date(tillValue));
-            let spaceId = JSON.parse(<?php echo json_encode($_GET['spaceId']);?>);
-            let userId = JSON.parse(<?php echo json_encode($_GET['userId']);?>);
+            let spaceId = JSON.parse(<?php echo json_encode($_POST['spaceId']);?>);
+            let userId = JSON.parse(<?php echo json_encode($_POST['userId']);?>);
             //console.log(from+","+till+","+spaceId+","+userId)
             $.ajax({
                 type: "POST",
@@ -52,7 +55,7 @@ include ('Header.php');
                 dataType: "json",
                 success: function (response) {
                     //console.log(response);
-                    let lotId=JSON.parse(<?php echo json_encode($_GET['lotId']); ?>);
+                    let lotId=JSON.parse(<?php echo json_encode($_POST['lotId']); ?>);
                     window.location = 'ParkingSpaceOverview.php?lotId='+lotId;
                     //alert("success");
                 },

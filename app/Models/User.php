@@ -28,7 +28,7 @@ class User{
 
     public function getUserInfo(int $id) {
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('SELECT username,status FROM Users WHERE id = ? LIMIT 1');
+        $query = $connection->prepare('SELECT username,status,email FROM Users WHERE id = ? LIMIT 1');
         $query->bind_param('i', $id);
         $query->execute();
         $info = null;
@@ -37,6 +37,7 @@ class User{
         while($row = $result->fetch_assoc()) {
             $info = [
                 'id' => $id,
+                'email' => $row['email'],
                 'username' => $row['username'],
                 'status' => $row['status'],
             ];
@@ -67,9 +68,9 @@ class User{
         $query = $connection->prepare('SELECT id FROM Users WHERE id = ?');
         $query->bind_param('i', $user_id);
         $query->execute();
-        $query->bind_result($id);
+        $result = $query->get_result();
         $connection->close();
-        if($id) return true;
+        if($result->fetch_assoc()) return true;
         return false;
     }
 

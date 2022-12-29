@@ -69,7 +69,7 @@ class ParkingSpace{
          * no datubāzes, ja ir rezervēts laika periodā, atgriezt true
          * Iesaistīt Reservation tabulu/modeli
          * */
-        $timeNow = new DateTime('now');
+        $timeNow = date('Y-m-d H:i:s');
         return (new Reservation)->checkSpaceReservation($id,$timeNow);
     }
 

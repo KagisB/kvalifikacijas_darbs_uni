@@ -5,18 +5,19 @@ namespace App\Models;
 require_once "../../vendor/autoload.php";
 
 use App\Models\DBConnection as DBConnection;
+use Cassandra\Date;
 use Datetime;
 
 class Reservation{
     public int $id;
     public int $user_id;
     public int $space_id;
-    public Datetime $from;
-    public Datetime $till;
+    public string $from;
+    public string $till;
     public string $reservation_code;
 
-    public function __construct(?int $id = 0, ?int $user_id = 0, ?int $space_id = 0, ?Datetime $from = new Datetime('now'),
-                                ?Datetime $till = new Datetime('now'), ?string $reservation_code = '')
+    public function __construct(?int $id = 0, ?int $user_id = 0, ?int $space_id = 0, ?string $from = "",
+                                ?string $till = "", ?string $reservation_code = '')
     {
         $this->id = $id;
         $this->user_id = $user_id;
@@ -48,24 +49,26 @@ class Reservation{
         return false;
     }
 
-    public function getReservationIdsByUserId(int $user_id, Datetime $from, Datetime $till) : array
+    public function getReservationIdsByUserId(int $user_id) : array
     {
         /*
          * atgriezt visas rezervācijas noteiktā periodā? kuras rezervējis konkrēts lietotājs
          * */
+        $from = date('Y-m-d H:i:s');
+        $till = new Datetime('now');
+        $till->modify('+1 month');
         $connection = (new DBConnection())->createPDOConnection();
         $sql = <<<MySQL
             SELECT id FROM Reservations 
             WHERE user_id = :user_id
-            AND (`from` < :timeFrom AND till < :timeTill)
-            OR (`from` > :timeFrom AND till < :timeTill)
-            OR (`from` > :timeFrom AND till > :timeTill)
+            AND (`from` < :from AND till < :timeTill)
+            OR (`from` > :from AND till < :timeTill)
+            OR (`from` > :from AND till > :timeTill)
         MySQL;
-        $timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
         $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
         $params = [
             'user_id' => $user_id,
-            'timeFrom' => $timeFrom,
+            'from' => $from,
             'timeTill' => $timeTill,
         ];
         $query = $connection->prepare($sql);
@@ -78,9 +81,9 @@ class Reservation{
         return $reservationIds;
     }
 
-    public function getReservationsByUserId(int $user_id, Datetime $from, Datetime $till) : array
+    public function getReservationsByUserId(int $user_id) : array
     {
-        $reservationIds = $this->getReservationIdsByUserId($user_id, $from, $till);
+        $reservationIds = $this->getReservationIdsByUserId($user_id);
         $reservations = [];
         foreach($reservationIds as $reservationId) {
             $reservation = $this->getReservationById($reservationId);
@@ -102,13 +105,13 @@ class Reservation{
         $query = $connection->prepare('SELECT * FROM Reservations WHERE id = ?');
         $query->bind_param('i', $id);
         $query->execute();
-        $connection->close();
         $result = $query->get_result();
+        $connection->close();
         $row = $result->fetch_assoc();
         return  new Reservation($id,$row['user_id'],$row['space_id'],$row['from'],$row['till'], $row['reservation_code']);
     }
 
-    public function getSpaceReservationsInTimePeriod(int $space_id,Datetime $from, Datetime $till) : ?array
+    public function getSpaceReservationsInTimePeriod(int $space_id,string $from, string $till) : ?array
     {
         $connection = (new DBConnection())->createPDOConnection();
         $sql = <<<MySQL
@@ -118,12 +121,12 @@ class Reservation{
             OR (`from` > :timeFrom AND till < :timeTill)
             OR (`from` > :timeFrom AND till > :timeTill)
         MySQL;
-        $timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
-        $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
+        /*$timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
+        $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());*/
         $params = [
             'space_id' => $space_id,
-            'timeFrom' => $timeFrom,
-            'timeTill' => $timeTill,
+            'timeFrom' => $from,
+            'timeTill' => $till,
         ];
         $query = $connection->prepare($sql);
         $query->execute($params);
@@ -154,7 +157,7 @@ class Reservation{
         return true;
     }
 
-    public function checkSpaceReservation(int $space_id, Datetime $timeNow) : bool
+    public function checkSpaceReservation(int $space_id, string $timeNow) : bool
     {
         $connection = (new DBConnection())->createPDOConnection();
         $sql = <<<MySQL
@@ -162,7 +165,7 @@ class Reservation{
             WHERE space_id = :space_id
             AND (`from` < :timeNow AND 'till' > :timeNow)
         MySQL;
-        $timeNow = date('Y-m-d H:i:s',$timeNow->getTimestamp());
+        //$timeNow = date('Y-m-d H:i:s',$timeNow->getTimestamp());
         $params = [
             'space_id' => $space_id,
             'timeNow' => $timeNow,
@@ -183,9 +186,9 @@ class Reservation{
         $sql = <<<MySQL
             SELECT id FROM Reservations 
             WHERE space_id = :space_id
-            AND (`from` < :from AND 'till' < :till)
-            OR (`from` > :from AND 'till' < :till)
-            OR (`from` > :from AND 'till' > :till)
+            AND (`from` <= :from AND 'till' <= :till)
+            OR (`from` >= :from AND 'till' <= :till)
+            OR (`from` >= :from AND 'till' >= :till)
         MySQL;
         $params = [
             'space_id' => $space_id,

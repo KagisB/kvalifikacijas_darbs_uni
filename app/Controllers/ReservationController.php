@@ -18,7 +18,7 @@ class ReservationController{
          * */
         $user_id = $userId;
         $space_id = $spaceId;
-        if($this->validateInput($spaceId, $from, $till)){
+        if($this->validateInput($user_id,$space_id, $from, $till)){
             $fromDate = date('Y-m-d H:i:s',strtotime($from));
             $tillDate = date('Y-m-d H:i:s',strtotime($till));
             return (new Reservation())->addReservation($user_id,$space_id,$fromDate,$tillDate);
@@ -26,29 +26,19 @@ class ReservationController{
         return false;
     }
 
-    public function showSpaceReservations()
+    public function showSpaceReservations(int $userId, int $spaceId, string $from, string $till)
     {
         /*
          * Parādīt rezervācijas noteiktajā laika periodā konkrētā periodā, kad validēts periods.
          * */
         $data = [];
-        $from = $_GET['from'];//potenciāli pārveidot uz datetime, ja padotais variable ir string
-        $till = $_GET['till'];
-        $space_id = $_GET['space_id'];
-        if(!(new ParkingSpace)->spaceExists($space_id)) {
-            echo "Error: Space does not exist";
-            return $data;
+        $user_id = $userId;
+        $space_id = $spaceId;
+        if($this->validateInput($user_id,$space_id, $from, $till)){
+            $fromDate = date('Y-m-d H:i:s',strtotime($from));
+            $tillDate = date('Y-m-d H:i:s',strtotime($till));
         }
-        if($till<$from) {
-            echo "Error: Period start is after period end";
-            return $data;
-        }
-        $interval = $from->diff($till);
-        if($interval->d > 31) {
-            echo "Error: Period length is longer than 31 days!";
-            return $data;
-        }
-        $reservations = (new Reservation())->getSpaceReservationsInTimePeriod($space_id,$from,$till);
+        $reservations = (new Reservation())->getSpaceReservationsInTimePeriod($space_id,$fromDate,$tillDate);
         foreach ($reservations as $reservation) {
             /*$data[]=[
                 'id' => $reservation['id'],
@@ -62,33 +52,21 @@ class ReservationController{
         return $data;
     }
 
-    public function showUserReservations()
+    public function showUserReservations(int $userId)
     {
         $data = [];
-        $from = $_GET['from'];//potenciāli pārveidot uz datetime, ja padotais variable ir string
-        $till = $_GET['till'];
-        $user_id = $_GET['space_id'];
+        $user_id = $userId;
         if(!(new User)->userExists($user_id)) {
-            echo "Error: Space does not exist";
             return $data;
         }
-        if($till<$from) {
-            echo "Error: Period start is after period end";
-            return $data;
-        }
-        $interval = $from->diff($till);
-        if($interval->d > 31) {
-            echo "Error: Period length is longer than 31 days!";
-            return $data;
-        }
-        $reservations = (new Reservation())->getReservationsByUserId($user_id,$from,$till);
+        $reservations = (new Reservation())->getReservationsByUserId($user_id);
         foreach ($reservations as $reservation) {
             $data[] = $reservation;
         }
         return $data;
     }
 
-    public function validateInput(int $userId, string $from, string $till) :bool
+    public function validateInput(int $userId,int $spaceId, string $from, string $till) :bool
     {
         try{
             $fromDate = new Datetime($from);
@@ -100,23 +78,29 @@ class ReservationController{
         } catch (\Exception $e) {
             $tillDate = new Datetime('now');
         }
+        if(!(new ParkingSpace)->spaceExists($spaceId)) {
+            echo "Error: Space does not exist";
+            return false;
+        }
         if(!(new User)->userExists($userId)) {
-            //echo "Error: Space does not exist";
+            echo "Error: User does not exist";
             return false;
         }
         if(!date('Y-m-d H:i:s',strtotime($from))){
+            echo "unable to create date from";
             return false;
         }
-        if(!date('Y-m-d H:i:s',strtotime($from))){
+        if(!date('Y-m-d H:i:s',strtotime($till))){
+            echo "unable to create date till";
             return false;
         }
         if($tillDate<$fromDate || $tillDate===$fromDate) {
-            //echo "Error: Period start is after period end";
+            echo "Error: Period start is after period end or exactly the same";
             return false;
         }
         $interval = $fromDate->diff($tillDate);
         if($interval->d > 31) {
-            //echo "Error: Period length is longer than 31 days!";
+            echo "Error: Period length is longer than 31 days!";
             return false;
         }
         return true;

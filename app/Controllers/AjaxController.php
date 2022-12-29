@@ -11,11 +11,11 @@ use App\Controllers\UserController as UserController;
 use DateTime;
 
 $errors = [];
-/*$_POST['action']='reservationCreate';
+/*$_POST['action']='reservationLoadUser';
 $_POST['userId']=1;
-$_POST['spaceId']=21;
-$_POST['from']="27-12-2022 21:25:20";
-$_POST['till']="28-12-2022 12:22:23";*/
+$_POST['spaceId']=28;
+$_POST['from']="29-12-2022 21:25:20";
+$_POST['till']="29-12-2022 22:25:20";*/
 if(!empty($_POST['action'])){
     switch($_POST['action']){
         case 'userGet':
@@ -89,13 +89,18 @@ if(!empty($_POST['action'])){
             break;
         case 'spaceInfo':
             if(isset($_GET['spaceId'])){
-
+                //echo json_encode((new ReservationController)->showSpaceReservations());
+                echo json_encode(true);
+                break;
             }
 
             break;
         case 'reservationCreate':
             if(isset($_POST['from']) && isset($_POST['till']) && isset($_POST['spaceId']) && isset($_POST['userId'])) {
-                if((new ReservationController)->createReservation($_POST['userId'],$_POST['spaceId'],$_POST['from'],$_POST['till'])) {
+                $userId = intval($_POST['userId']);
+                $spaceId = intval($_POST['spaceId']);
+                if((new ReservationController)->createReservation($userId,$spaceId,$_POST['from'],$_POST['till'])) {
+                //if((new ReservationController)->createReservation($_POST['userId'],$_POST['spaceId'],$_POST['from'],$_POST['till'])) {
                     echo json_encode(true);
 
                     break;
@@ -107,6 +112,17 @@ if(!empty($_POST['action'])){
                 break;
             }
             $errors['setData']="Nav ievadīti stāvlaukuma dati!";
+            $jErrors = json_encode($errors);
+            echo $jErrors;
+
+            break;
+        case 'reservationLoadUser':
+            if(isset($_POST['userId'])) {
+                echo json_encode((new ReservationController)->showUserReservations($_POST['userId']));
+
+                break;
+            }
+            $errors['setData']="Nav lietotājs!";
             $jErrors = json_encode($errors);
             echo $jErrors;
 

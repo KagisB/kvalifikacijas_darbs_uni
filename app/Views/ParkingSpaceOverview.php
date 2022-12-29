@@ -1,7 +1,7 @@
 <?php
 session_start();
 include ('Header.php');
-//echo $_GET['lotId'];
+echo $_GET['lotId'];
 ?>
 
 <div id="lotInfo">
@@ -85,7 +85,7 @@ include ('Header.php');
 
         function addRedirectForm(spaceBox){
             let redirectForm = document.createElement('form');
-            redirectForm.method="GET";
+            redirectForm.method="POST";
             redirectForm.action="ReservationCreate.php";
             redirectForm.id="spaceForm"+spaceBox.id;
             redirectForm.className="d-none";
@@ -116,6 +116,7 @@ include ('Header.php');
 
             redirectForm.appendChild(userIdInput);
             redirectForm.appendChild(spaceIdInput);
+            redirectForm.appendChild(lotIdInput);
             let logInStatus= JSON.parse(<?php echo json_encode($_SESSION['logInStatus']);?>);
             if(logInStatus){
                 redirectForm.appendChild(submitButtonReservation);
