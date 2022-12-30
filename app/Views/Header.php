@@ -35,7 +35,7 @@
                 if(user){
                     if(user.status>0){
                         //$('#userProfile').setAttribute("href","UserProfileView.php");
-                        document.getElementById("userProfile").href += "?userId="+user.id;
+                        //document.getElementById("userProfile").href += "?userId="+user.id;
                         $('#logIn').removeClass(" visible").addClass(" invisible");
                         $('#logOut').removeClass(" invisible").addClass(" visible");
                         $('#userProfile').removeClass(" invisible").addClass(" visible");

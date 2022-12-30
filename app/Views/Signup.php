@@ -20,21 +20,25 @@
     <input type="submit" value="Iesniegt">
 </form>
 <script>
-    $("#signUpForm").submit(function(event) {
+    $("#signUpForm").submit(function(e) {
 
-        event.preventDefault(); // avoid to execute the actual submit of the form.
+        e.preventDefault(); // avoid to execute the actual submit of the form.
 
+        let username = $("#username").val().toString();
+        let email = $("#email").val().toString();
+        let password = $("#password").val().toString();
         $.ajax({
             type: "POST",
             url: "../Controllers/AjaxController.php",
             data: {
-                'username': $("#username").val(),
-                'email': $("#email").val(),
-                'password': $("#password").val(),
+                'username': username,
+                'email': email,
+                'password': password,
                 'action' : 'userSignUp',
             },
             success: function(data)
             {
+                window.location = 'Index.php';
                 //redirect uz homepage, tagad logged in/signed up.
             }
         });

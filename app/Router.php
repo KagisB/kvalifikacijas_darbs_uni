@@ -1,56 +1,88 @@
 <?php
-
-namespace Router;
-
+require_once '../vendor/autoload.php';
+/*
+ Adds routes with the help of FastRoutes package, to help redirect pages to other pages,
+ without needing to do so in every file individually.
+*/
 class Router{
-    //https://dev.to/mvinhas/simple-routing-system-for-a-php-mvc-application-16f7
-    private static function getURI() : array
-    {
-        $path_info = $_SERVER['PATH_INFO'] ?? '/';
-        return explode('/', $path_info);
+    private $dispatcher;
+    public function __construct(){
+        $this->dispatcher = FastRoute\simpleDispatcher(function($r) {
+            $r->get('/public/index.php', 'sendToIndex');
+            $r->get('/', 'sendToIndex');
+            $r->get('/index.php', 'sendToIndex');
+            $r->post('/app/views/ParkingLotList.php', 'sendToLotList');
+            $r->post('/app/views/Login.php', 'sendToLogin');
+            $r->post('/app/views/ParkingLotCreation.php', 'sendToLotCreation');
+            $r->post('/app/views/ParkingSpaceOverview.php', 'sendToSpaceOverview');
+            $r->post('/app/views/Signup.php', 'sendToSignup');
+            $r->post('/app/views/UserProfileView.php', 'sendToUser');
+            $r->post('/app/views/ParkingSpaceReservation.php', 'sendToReservation');//{id:\d+}
+
+            $r->post('/app/lot/{lotId:\d+}', 'sendToSpaceOverview');
+            $r->post('/app/user/{userId:\d+}', 'sendToUser');
+            $r->post('/app/lot/{lotId:\d+}/space/{spaceId:\d+}', 'sendToReservation');
+        });
     }
-
-    private static function processURI() : array
-    {
-        $controllerPart = self::getURI()[0] ?? '';
-        $methodPart = self::getURI()[1] ?? '';
-        $numParts = count(self::getURI());
-        $argsPart = [];
-        for ($i = 2; $i < $numParts; $i++) {
-            $argsPart[] = self::getURI()[$i] ?? '';
-        }
-
-        //Let's create some defaults if the parts are not set
-        $controller = !empty($controllerPart) ?
-            '\Controllers\\'.$controllerPart.'Controller' :
-            '\Controllers\HomeController';
-
-        $method = !empty($methodPart) ?
-            $methodPart :
-            'index';
-
-        $args = !empty($argsPart) ?
-            $argsPart :
-            [];
-
-        return [
-            'controller' => $controller,
-            'method' => $method,
-            'args' => $args
-        ];
-    }
-
-    public static function contentToRender() : void
-    {
-        $uri = self::processURI();
-        if (class_exists($uri['controller'])) {
-            $controller = $uri['controller'];
-            $method = $uri['method'];
-            $args = $uri['args'];
-            //Now, the magic
-            $args ? $controller::{$method}(...$args) :
-                $controller::{$method}();
+    public function dispatchRoute($uri){
+        $httpMethod = 'GET';
+        $uri = cleanURI($uri);
+        $routeInfo = $this->dispatcher->dispatch($httpMethod, $uri);
+        switch ($routeInfo[0]) {
+            case FastRoute\Dispatcher::NOT_FOUND:
+                // ... 404 Not Found
+                echo "404 Not Found";
+                break;
+            case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
+                $allowedMethods = $routeInfo[1];
+                // ... 405 Method Not Allowed
+                echo "405 Method Not Allowed";
+                break;
+            case FastRoute\Dispatcher::FOUND:
+                $handler = $routeInfo[1];
+                $vars = $routeInfo[2];
+                // ... call $handler with $vars
+                call_user_func($handler,$vars);
+                break;
         }
     }
 }
-
+function cleanURI($uri){
+    if (false !== $pos = strpos($uri, '?')) {
+        $uri = substr($uri, 0, $pos);
+    }
+    return $uri;
+}
+function sendToIndex(){
+    //header('Location: ../app/Views/Index.php');
+    header('Location: ../public/Index.php');
+    exit();
+}
+function sendToLogin(){
+    header('Location: ../app/Views/Login.php');
+    exit();
+}
+function sendToLotList(){
+    header('Location: ../app/Views/ParkingLotList.php');
+    exit();
+}
+function sendToLotCreation(){
+    header('Location: ../app/Views/ParkingLotCreation.php');
+    exit();
+}
+function sendToSpaceOverview(?int $lotId){
+    header('Location: ../app/Views/ParkingSpaceOverview.php?lotId='.$lotId);
+    exit();
+}
+function sendToSignup(){
+    header('Location: ../app/Views/Signup.php');
+    exit();
+}
+function sendToUser(){
+    header('Location: ../app/Views/UserProfileView.php');
+    exit();
+}
+function sendToReservation(?int $lotId, ?int $spaceId){
+    header('Location: ../app/Views/ParkingSpaceReservation?lotId='.$lotId."&spaceId=".$spaceId);
+    exit();
+}
