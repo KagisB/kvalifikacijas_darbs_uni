@@ -79,7 +79,7 @@ include ('Header.php');
     });
     function createSpaceRedirect(reservation){
         let linkForm = document.createElement("form");
-        linkForm.method = "GET";
+        linkForm.method = "POST";
         linkForm.action = "ParkingSpaceReservations.php";
         linkForm.id=reservation.space_id;
         //linkForm.className="d-none";

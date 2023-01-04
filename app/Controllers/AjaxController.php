@@ -11,11 +11,11 @@ use App\Controllers\UserController as UserController;
 use DateTime;
 
 $errors = [];
-/*$_POST['action']='reservationLoadUser';
+/*$_POST['action']='reservationCreate';
 $_POST['userId']=1;
-$_POST['spaceId']=28;
-$_POST['from']="29-12-2022 21:25:20";
-$_POST['till']="29-12-2022 22:25:20";*/
+$_POST['spaceId']=27;
+$_POST['from']="2023-01-06 05:30:00";
+$_POST['till']="2023-01-06 10:30:00";*/
 if(!empty($_POST['action'])){
     switch($_POST['action']){
         case 'userGet':
@@ -123,6 +123,17 @@ if(!empty($_POST['action'])){
                 break;
             }
             $errors['setData']="Nav lietotājs!";
+            $jErrors = json_encode($errors);
+            echo $jErrors;
+
+            break;
+        case 'spaceReservationLoad':
+            if(isset($_POST['spaceId'])) {
+                echo json_encode((new ReservationController)->showSpaceReservations($_POST['userId'],$_POST['spaceId'],$_POST['day']));
+
+                break;
+            }
+            $errors['setData']="Nav stāvvietas!";
             $jErrors = json_encode($errors);
             echo $jErrors;
 

@@ -114,12 +114,15 @@ class Reservation{
     public function getSpaceReservationsInTimePeriod(int $space_id,string $from, string $till) : ?array
     {
         $connection = (new DBConnection())->createPDOConnection();
+        /* AND (`from` < :timeFrom AND `till` < :timeTill AND `till` > :timeFrom)
+          OR (`from` >= :timeFrom AND `till` <= :timeTill)
+          OR (`from` > :timeFrom AND `till` > :timeTill AND `from` < :timeTill)*/
         $sql = <<<MySQL
             SELECT * FROM Reservations 
             WHERE space_id = :space_id
-            AND (`from` < :timeFrom AND till < :timeTill)
-            OR (`from` > :timeFrom AND till < :timeTill)
-            OR (`from` > :timeFrom AND till > :timeTill)
+            AND (`from` < :timeFrom AND `till` < :timeTill AND `till` > :timeFrom)
+            OR (`from` >= :timeFrom AND `till` <= :timeTill)
+            OR (`from` > :timeFrom AND `till` > :timeTill AND `from` < :timeTill)
         MySQL;
         /*$timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
         $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());*/
@@ -186,9 +189,9 @@ class Reservation{
         $sql = <<<MySQL
             SELECT id FROM Reservations 
             WHERE space_id = :space_id
-            AND (`from` <= :from AND 'till' <= :till)
+            AND (`from` <= :from AND 'till' <= :till AND `till` >= :from)
             OR (`from` >= :from AND 'till' <= :till)
-            OR (`from` >= :from AND 'till' >= :till)
+            OR (`from` >= :from AND 'till' >= :till AND `from` <= :till)
         MySQL;
         $params = [
             'space_id' => $space_id,

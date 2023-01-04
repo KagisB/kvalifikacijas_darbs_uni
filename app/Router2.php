@@ -2,7 +2,7 @@
 
 namespace Router;
 
-class Router{
+class Router2{
     //https://dev.to/mvinhas/simple-routing-system-for-a-php-mvc-application-16f7
     private static function getURI() : array
     {

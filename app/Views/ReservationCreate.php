@@ -66,47 +66,47 @@ include ('Header.php');
             });
 
         });
-    });
-    function setMaxMinDate(){
-        let today = new Date();
-        let todayString = returnDateString(today);
-        let till = new Date();
-        till.setMonth(till.getMonth()+1);
-        let tillString = returnDateString(till);
-        document.getElementById("from").setAttribute("min", todayString);
-        document.getElementById("from").setAttribute("max", tillString);
-        document.getElementById("till").setAttribute("min", todayString);
-        document.getElementById("till").setAttribute("max", tillString);
-    }
-    function changeMaxMinDate(){
-        /*
-        Potenciāla funkcija, lai dinamiski atjaunotu atļauto maksimālo vērtību rezervācijas gala datumam,
-        ja rezervāciju ļauj veikt vairāk kā mēnesi uz priekšu
-         */
-        let minDate = new Date(document.getElementById("from").value);
-        let minDateString = returnDateString(minDate);
-        document.getElementById("till").setAttribute("min", minDateString);
-    }
+        function setMaxMinDate(){
+            let today = new Date();
+            let todayString = returnDateString(today);
+            let till = new Date();
+            till.setMonth(till.getMonth()+1);
+            let tillString = returnDateString(till);
+            document.getElementById("from").setAttribute("min", todayString);
+            document.getElementById("from").setAttribute("max", tillString);
+            document.getElementById("till").setAttribute("min", todayString);
+            document.getElementById("till").setAttribute("max", tillString);
+        }
+        function changeMaxMinDate(){
+            /*
+            Potenciāla funkcija, lai dinamiski atjaunotu atļauto maksimālo vērtību rezervācijas gala datumam,
+            ja rezervāciju ļauj veikt vairāk kā mēnesi uz priekšu
+             */
+            let minDate = new Date(document.getElementById("from").value);
+            let minDateString = returnDateString(minDate);
+            document.getElementById("till").setAttribute("min", minDateString);
+        }
 
-    function returnDateString(currentDate){
-        let d=currentDate.getDate();
-        let m=currentDate.getMonth()+1;//js shenanigans
-        let y=currentDate.getFullYear();
-        let h=currentDate.getHours();
-        let min=currentDate.getMinutes();
-        if(d<10){
-            d= '0'+d;
+        function returnDateString(currentDate){
+            let d=currentDate.getDate();
+            let m=currentDate.getMonth()+1;//js shenanigans
+            let y=currentDate.getFullYear();
+            let h=currentDate.getHours();
+            let min=currentDate.getMinutes();
+            if(d<10){
+                d= '0'+d;
+            }
+            if(m<10){
+                m = '0'+m;
+            }
+            if(min<10){
+                min = '0'+min;
+            }
+            if(h<10){
+                h = '0'+h;
+            }
+            return y+'-'+m+'-'+d+'T'+h+':'+min;
         }
-        if(m<10){
-            m = '0'+m;
-        }
-        if(min<10){
-            min = '0'+min;
-        }
-        if(h<10){
-            h = '0'+h;
-        }
-        return y+'-'+m+'-'+d+'T'+h+':'+min;
-    }
+    });
 </script>
 </html>

@@ -86,7 +86,7 @@ echo $_GET['lotId'];
         function addRedirectForm(spaceBox){
             let redirectForm = document.createElement('form');
             redirectForm.method="POST";
-            redirectForm.action="ReservationCreate.php";
+            redirectForm.action="ParkingSpaceReservations.php";
             redirectForm.id="spaceForm"+spaceBox.id;
             redirectForm.className="d-none";
 
