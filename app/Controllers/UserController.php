@@ -13,16 +13,23 @@ class UserController{
         /*
          * validēt lietotāja ievadītos datus login laikā
          * */
-        $password = $_POST['password'];
-        $username = $_POST['username'];
+        if(isset($_POST['password'])){
+            $password = $_POST['password'];
+        }
+        else return false;
+        if(isset($_POST['username'])){
+            $username = $_POST['username'];
+        }
+        else return false;
         if(!$this->validateUsername($username)) {//username nav pareizs
-            echo "Username is incorrect. It should be between 6 and 25 characters";
+            //echo "Username is incorrect. It should be between 6 and 25 characters";
             return false;
         }
         if(!$this->validatePassword($password)) {//parole nav pareiza
-            echo "Password is incorrect. It should contain at least one upper and lower case letter, one number and be at least 8 characters long";
+            //echo "Password is incorrect. It should contain at least one upper and lower case letter, one number and be at least 8 characters long";
             return false;
         }
+
         return (new User())->checkLoginInfo($username,$password);
     }
 
@@ -58,20 +65,20 @@ class UserController{
         }
         return null;
     }
-    public function validateSignUp()
+    public function validateSignUp(string $username, string $password, string $email)
     {
         /*
          * Validēt ievadītos datus sign up laikā
          * */
-        $password = $_POST['password'];
-        $username = $_POST['username'];
-        $email = $_POST['email'];
         if(!$this->validateUsername($username)) {//username nav pareizs
-            echo "Username is incorrect. It should be between 6 and 25 characters";
+            //echo "Username is incorrect. It should be between 6 and 25 characters";
             return false;
         }
         if(!$this->validatePassword($password)) {//parole nav pareiza
-            echo "Password is incorrect. It should contain at least one upper and lower case letter, one number and be at least 8 characters long";
+            //echo "Password is incorrect. It should contain at least one upper and lower case letter, one number and be at least 8 characters long";
+            return false;
+        }
+        if(!$this->validateEmail($email)){
             return false;
         }
         $emailFiltered = filter_var($email, FILTER_SANITIZE_EMAIL);
@@ -108,6 +115,17 @@ class UserController{
         if(strlen($username) > 25 || strlen($username) < 6){
             return false;
         }
+        if((new User)->usernameExists($username)){
+            return false;
+        }
+        return true;
+    }
+
+    public function validateEmail(string $email) : bool
+    {
+        if((new User)->emailExists($email)){
+            return false;
+        }
         return true;
     }
 
@@ -128,16 +146,57 @@ class UserController{
             session_start();
             $_SESSION['userId'] = $this->getUserIdFromUsername($_POST['username']);
             $_SESSION['logInStatus'] = true;
-            //session_write_close();
             return true;
         }
         return false;
     }
 
-    public function signUp()
+    public function signUp(string $username, string $password, string $email)
     {
-        if($this->validateSignUp()) {
+        if($this->validateSignUp($username,$password,$email)) {
             return $this->logIn();
+        }
+        return false;
+    }
+
+    public function checkEditUserInfo(?string $username="", ?string $password="", ?string $email="")
+    {
+        $validation = true;
+        if(!$this->validateUsername($username)){
+            $validation = false;
+        }
+        if(!$this->validateEmail($email)){
+            $validation = false;
+        }
+        if(!$this->validatePassword($password)){
+            $validation = false;
+        }
+        $userId = $this->getUserId();
+        if($validation and $userId){
+            return $this->editUser($username,$password,$email,$userId);
+        }
+        return false;
+    }
+
+    public function editUser(int $userId,?string $username="", ?string $password="", ?string $email="") : bool
+    {
+        $editStatus = false;
+        if(!empty($username)){
+            $editStatus = (new User)->editUsername($username, $userId);
+        }
+        if(!empty($email)){
+            $editStatus = (new User)->editUserEmail($email, $userId);
+        }
+        if(!empty($password)){
+            $editStatus = (new User)->editUserPassword($password, $userId);
+        }
+        return $editStatus;
+    }
+
+    public function deleteUser(int $userId)
+    {
+        if($userId === $this->getUserId()){
+            return (new User)->removeUser($userId);
         }
         return false;
     }

@@ -26,6 +26,34 @@ class User{
         return false;
     }
 
+    public function emailExists(string $email) :bool
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT id FROM Users WHERE email = ? LIMIT 1');
+        $query->bind_param('s', $email);
+        $query->execute();
+        $result = $query->get_result();
+        $connection->close();
+        if($result){
+            return true;
+        }
+        return false;
+    }
+
+    public function usernameExists(string $username) :bool
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT id FROM Users WHERE username = ? LIMIT 1');
+        $query->bind_param('s', $username);
+        $query->execute();
+        $result = $query->get_result();
+        $connection->close();
+        if($result){
+            return true;
+        }
+        return false;
+    }
+
     public function getUserInfo(int $id) {
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('SELECT username,status,email FROM Users WHERE id = ? LIMIT 1');
@@ -91,6 +119,59 @@ class User{
             }
         }
         $connection->close();
+        return false;
+    }
+
+    public function editUsername(string $username, int $userId) :bool
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('UPDATE Users SET username = ?  WHERE id= ?');
+        $query->bind_param('ssi', $username, $userId);
+        $query->execute();
+        $connection->close();
+        if($query->result_metadata()){
+            return true;
+        }
+        return false;
+    }
+
+    public function editUserEmail(string $email, int $userId) :bool
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('UPDATE Users SET  email = ? WHERE id= ?');
+        $query->bind_param('ssi',  $email, $userId);
+        $query->execute();
+        $connection->close();
+        if($query->result_metadata()){
+            return true;
+        }
+        return false;
+    }
+
+    public function editUserPassword(string $password, int $userId) : bool
+    {
+        $password_hash = password_hash($password,PASSWORD_BCRYPT);
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('UPDATE Users SET password = ? WHERE id= ?');
+        $query->bind_param('si', $password_hash, $userId);
+        $query->execute();
+        $connection->close();
+        if($query->result_metadata()){
+            return true;
+        }
+        return false;
+    }
+
+    public function removeUser(int $userId) : bool
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('DELETE FROM Users WHERE id = ?');
+        $query->bind_param('i', $userId);
+        $query->execute();
+        $connection->close();
+        if($query->result_metadata()){
+            return true;
+        }
         return false;
     }
 }

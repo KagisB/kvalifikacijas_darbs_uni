@@ -48,15 +48,43 @@ if(!empty($_POST['action'])){
                 $errors['logInDataError']="Nepareizi ievadīti lietotāja dati!";
                 $jErrors = json_encode($errors);
                 echo $jErrors;
+
+                break;
             }
             $errors['setData']="Nav ievadīti lietotāja dati!";
             //echo json_encode($errors);
             $jErrors = json_encode($errors);
 
             echo $jErrors;
+
+            break;
+        case 'userEdit':
+            if(isset($_POST['username']) || isset($_POST['password']) || isset($_POST['email'])){
+                if((new UserController)->checkEditUserInfo($_POST['username'],$_POST['password'],$_POST['email'])){
+                    echo json_encode(true);
+                    break;
+                }
+                $errors['editFail'] = "Nav ievadīti lietotāja dati!";
+                $jErrors = json_encode($errors);
+
+                echo $jErrors;
+                break;
+            }
+            $errors['setData'] = "Kļūda datu rediģēšanā";
+            $jErrors = json_encode($errors);
+
+            echo $jErrors;
+            break;
         case 'userLogOut':
             echo json_encode((new UserController)->logOut());
 
+            break;
+        case 'userDelete':
+            if(isset($_POST['userId'])){
+                echo json_encode((new UserController)->deleteUser($_POST['userId']));
+
+                break;
+            }
             break;
         case 'lotLoad':
             echo json_encode((new LotController())->getLotList());
