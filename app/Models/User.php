@@ -7,7 +7,36 @@ require_once "../../vendor/autoload.php";
 use App\Models\DBConnection as DBConnection;
 
 class User{
-    // Tiek pieņemts, ka lietotāja datus ir jau pārbaudījis UserController, un tie ir fine
+    private int $userId;
+    private string $username;
+    private int $status;
+    private string $email;
+
+    public function __construct(?int $id){
+        $this->userId = $id;
+        if($id && $id > -1){
+            $data = $this->getUserInfo($this->userId);
+            $this->username = $data['username'];
+            $this->status = $data['status'];
+            $this->email = $data['email'];
+        }
+    }
+
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
     public function addUser(string $username, string $password, string $email) : bool
     {
         /*
@@ -73,6 +102,23 @@ class User{
         return $info;
     }
 
+    public function checkPassword(int $id, string $password) : bool
+    {
+        $connection = (new DBConnection())->createMySQLiConnection();
+        $query = $connection->prepare('SELECT password FROM Users WHERE id = ? LIMIT 1');
+        $query->bind_param('i', $id);
+        $query->execute();
+        $info = null;
+        $result = $query->get_result();
+        $connection->close();
+        while($row = $result->fetch_assoc()) {
+            if(password_verify($password,$row['password'])){
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function getUserIdByUsername(string $username) : ?int
     {
         $connection = (new DBConnection())->createMySQLiConnection();
@@ -126,7 +172,7 @@ class User{
     {
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('UPDATE Users SET username = ?  WHERE id= ?');
-        $query->bind_param('ssi', $username, $userId);
+        $query->bind_param('si', $username, $userId);
         $query->execute();
         $connection->close();
         if($query->result_metadata()){
@@ -139,7 +185,7 @@ class User{
     {
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('UPDATE Users SET  email = ? WHERE id= ?');
-        $query->bind_param('ssi',  $email, $userId);
+        $query->bind_param('si',  $email, $userId);
         $query->execute();
         $connection->close();
         if($query->result_metadata()){

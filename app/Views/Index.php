@@ -6,6 +6,8 @@ $isLoggedIn = false;
 if(isset($_SESSION['userId'])){
     $isLoggedIn = true;
 }
+/*echo $_SESSION['userId'];
+echo $_SESSION['logInStatus'];*/
 ?>
 <div id="Intro" class="container">
     <p>Sveicināti autostāvietu rezervācijas sistēmā.</p>

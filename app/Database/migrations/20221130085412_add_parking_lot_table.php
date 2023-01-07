@@ -26,6 +26,8 @@ final class AddParkingLotTable extends AbstractMigration
         $table->addColumn('address','string', ['limit' => 75])
             ->addColumn('space_count','integer')
             ->addColumn('hourly_rate', 'float')
+            ->addColumn('owner_id','integer')
+            ->addForeignKey('owner_id','Users','id',['delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'])
             ->create();
     }
 }

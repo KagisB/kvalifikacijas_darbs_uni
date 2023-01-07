@@ -30,7 +30,7 @@ class UserController{
             return false;
         }
 
-        return (new User())->checkLoginInfo($username,$password);
+        return (new User(-1))->checkLoginInfo($username,$password);
     }
 
     public function getUserId() : ?int
@@ -39,7 +39,7 @@ class UserController{
          * Iegūt user id no $_SESSION['userId'], ja nav, tad null
          * */
         session_start();
-        if(isset($_SESSION['userId'])) {
+        if(!empty($_SESSION['userId'])){
             return $_SESSION['userId'];
         }
         return null;
@@ -53,7 +53,7 @@ class UserController{
         $user_id = $this->getUserId();
         $userInfo = null;
         if($user_id){
-            $userInfo = (new User())->getUserInfo($user_id);
+            $userInfo = (new User($user_id))->getUserInfo($user_id);
         }
         return $userInfo;
     }
@@ -61,7 +61,7 @@ class UserController{
     public function getUserIdFromUsername(string $username) : ?int
     {
         if($this->validateUsername($username)) {
-            return (new User)->getUserIdByUsername($username);
+            return (new User(-1))->getUserIdByUsername($username);
         }
         return null;
     }
@@ -78,11 +78,11 @@ class UserController{
             //echo "Password is incorrect. It should contain at least one upper and lower case letter, one number and be at least 8 characters long";
             return false;
         }
-        if(!$this->validateEmail($email)){
+        if(!$this->checkForUsage($username,$email)){
             return false;
         }
         $emailFiltered = filter_var($email, FILTER_SANITIZE_EMAIL);
-        return (new User())->addUser($username,$password,$emailFiltered);
+        return (new User(-1))->addUser($username,$password,$emailFiltered);
     }
 
     public function isUserLoggedIn() : bool
@@ -91,6 +91,7 @@ class UserController{
          * pārbaudīt, vai lietotājs ir ielogojies, vai nē.
          * */
         //Vajadzētu kaut kādu cookie/paņemt metodi no mana prakses darba.
+        session_start();
         if(!empty($_SESSION['userId'])){
             return true;
         }
@@ -98,16 +99,19 @@ class UserController{
     }
 
     // https://www.codexworld.com/how-to/validate-password-strength-in-php/
-    public function validatePassword(string $password) : bool
+    public function validatePassword(?string $password) : bool
     {
-        $uppercase = preg_match('@[A-Z]@', $password);
-        $lowercase = preg_match('@[a-z]@', $password);
-        $number    = preg_match('@[0-9]@', $password);
+        if($password){
+            $uppercase = preg_match('@[A-Z]@', $password);
+            $lowercase = preg_match('@[a-z]@', $password);
+            $number    = preg_match('@[0-9]@', $password);
 
-        if(!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
-           return false;
+            if(!$uppercase || !$lowercase || !$number || strlen($password) < 8) {
+                return false;
+            }
+            return true;
         }
-        return true;
+        return false;
     }
 
     public function validateUsername(string $username) : bool
@@ -115,18 +119,18 @@ class UserController{
         if(strlen($username) > 25 || strlen($username) < 6){
             return false;
         }
-        if((new User)->usernameExists($username)){
-            return false;
-        }
         return true;
     }
 
-    public function validateEmail(string $email) : bool
+    public function checkForUsage(string $username, string $email) : bool
     {
-        if((new User)->emailExists($email)){
-            return false;
+        if((new User(-1))->emailExists($email)){
+            return true;
         }
-        return true;
+        if((new User(-1))->usernameExists($username)){
+            return true;
+        }
+        return false;
     }
 
     public function logOut()
@@ -161,42 +165,28 @@ class UserController{
 
     public function checkEditUserInfo(?string $username="", ?string $password="", ?string $email="")
     {
-        $validation = true;
-        if(!$this->validateUsername($username)){
-            $validation = false;
-        }
-        if(!$this->validateEmail($email)){
-            $validation = false;
-        }
-        if(!$this->validatePassword($password)){
-            $validation = false;
-        }
         $userId = $this->getUserId();
-        if($validation and $userId){
-            return $this->editUser($username,$password,$email,$userId);
+        $user = (new User($userId));
+        $status1 = $status2 = $status3 = true;
+        if($this->checkForUsage($username,$email)){
+            $status1 = $status2 = false;
         }
-        return false;
-    }
-
-    public function editUser(int $userId,?string $username="", ?string $password="", ?string $email="") : bool
-    {
-        $editStatus = false;
-        if(!empty($username)){
-            $editStatus = (new User)->editUsername($username, $userId);
+        if($this->validateUsername($username) && $user->getUsername() !==$username){
+            $status1 = $user->editUsername($username,$userId);
         }
-        if(!empty($email)){
-            $editStatus = (new User)->editUserEmail($email, $userId);
+        if($this->validatePassword($password) && $user->checkPassword($userId,$password)){
+            $status2 =$user->editUserPassword($password,$userId);
         }
-        if(!empty($password)){
-            $editStatus = (new User)->editUserPassword($password, $userId);
+        if($user->getEmail() !==$email){
+            $status3 =$user->editUserEmail($email,$userId);
         }
-        return $editStatus;
+        return ($status1 || $status2 || $status3);
     }
 
     public function deleteUser(int $userId)
     {
         if($userId === $this->getUserId()){
-            return (new User)->removeUser($userId);
+            return (new User($userId))->removeUser($userId);
         }
         return false;
     }

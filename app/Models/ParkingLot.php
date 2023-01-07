@@ -12,13 +12,15 @@ class ParkingLot{
     public int $space_count;
     public float $hourly_rate;
     public string $address;
+    public int $owner_id;
 
-    public function __construct(?int $id = 0, ?string $address = '', ?int $space_count = 0, ?float $hourly_rate = 0)
+    public function __construct(int $id = 0, string $address = '', int $space_count = 0, float $hourly_rate = 0, int $owner_id = 0)
     {
-        $this->id = 0;
-        $this->address = '';
-        $this->space_count = 0;
-        $this->hourly_rate = 0;
+        $this->id = $id;
+        $this->address = $address;
+        $this->space_count = $space_count;
+        $this->hourly_rate = $hourly_rate;
+        $this->owner_id = $owner_id;
     }
 
     public function lotExists(int $id) : bool
@@ -37,10 +39,10 @@ class ParkingLot{
         $query = $connection->prepare('SELECT * FROM ParkingLots WHERE id = ?');
         $query->bind_param('i', $id);
         $query->execute();
-        $connection->close();
         $result = $query->get_result();
+        $connection->close();
         $row = $result->fetch_assoc();
-        return  new ParkingLot($id,$row['address'],$row['space_number'],$row['hourly_rate']);
+        return  new ParkingLot($id,$row['address'],$row['space_count'],$row['hourly_rate'], $row['owner_id']);
     }
 
     public function getLotList() : array
@@ -57,20 +59,21 @@ class ParkingLot{
                 'address' => $row['address'],
                 'space_count' => $row['space_count'],
                 'hourly_rate' => $row['hourly_rate'],
+                'owner_id' => $row['owner_id'],
             ];
         }
         return $lots;
     }
 
-    public function addLot(string $address, int $numberOfSpaces, float $hourly_rate) : bool
+    public function addLot(string $address, int $numberOfSpaces, float $hourly_rate, int $owner_id) : bool
     {
         /*
          * pievienot stāvlaukumu datubāzē, kad stāvlaukums izveidots, izveidot stāvvietas caur
          * ParkingSpace model
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('INSERT INTO ParkingLots (address,space_count,hourly_rate) VALUES (?, ?, ?)');
-        $query->bind_param('sid', $address, $numberOfSpaces, $hourly_rate);
+        $query = $connection->prepare('INSERT INTO ParkingLots (address,space_count,hourly_rate,owner_id) VALUES (?, ?, ?, ?)');
+        $query->bind_param('sidi', $address, $numberOfSpaces, $hourly_rate, $owner_id);
         $query->execute();
         if($query->affected_rows !== 0){
             (new ParkingSpace)->addSpacesOnLotCreation($query->insert_id,$numberOfSpaces);
@@ -87,7 +90,12 @@ class ParkingLot{
         $query = $connection->prepare('DELETE FROM ParkingLots WHERE id = ?');
         $query->bind_param('i', $lot_id);
         $query->execute();
-        return $query;
+        if($query->affected_rows !== 0){
+            $connection->close();
+            return true;
+        }
+        $connection->close();
+        return false;
         /*
          * izdzēst visas stāvvietas, kas saistītas ar stāvlaukumu, tad izdzēst pašu stāvlaukumu
          * */
@@ -118,7 +126,10 @@ class ParkingLot{
         $query->bind_param('di', $hourly_rate,$lot_id);
         $query->execute();
         $connection->close();
-        return $query;//varbūt būs jānomaina uz variable, kas ir vienāds ar to query execute un atgriezt variable
+        if($query->result_metadata()){
+            return true;
+        }
+        return false;
     }
 
     public function changeNumberOfSpaces(int $lot_id, int $number_of_spaces) : bool
@@ -141,11 +152,14 @@ class ParkingLot{
     public function updateNumberOfSpaces(int $lot_id, int $number_of_spaces) : bool
     {
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('UPDATE ParkingLots SET space_number = ? WHERE id = ?');
+        $query = $connection->prepare('UPDATE ParkingLots SET space_count = ? WHERE id = ?');
         $query->bind_param('ii', $number_of_spaces,$lot_id);
         $query->execute();
         $connection->close();
-        return $query;//varbūt būs jānomaina uz variable, kas ir vienāds ar to query execute un atgriezt variable
+        if($query->result_metadata()){
+            return true;
+        }
+        return false;
     }
 
     public function changeAddress(int $lot_id, string $address)
@@ -158,6 +172,9 @@ class ParkingLot{
         $query->bind_param('si', $address,$lot_id);
         $query->execute();
         $connection->close();
-        return $query;//varbūt būs jānomaina uz variable, kas ir vienāds ar to query execute un atgriezt variable
+        if($query->result_metadata()){
+            return true;
+        }
+        return false;
     }
 }

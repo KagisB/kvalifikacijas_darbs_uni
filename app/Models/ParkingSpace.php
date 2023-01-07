@@ -127,7 +127,7 @@ class ParkingSpace{
          * */
         $connection = (new DBConnection())->createMySQLiConnection();
         for($i = $originalSpaceCount+1; $i <= $number_of_spaces; $i++){
-            $query = $connection->prepare('INSERT INTO ParkingSpaces VALUES (?,?)');
+            $query = $connection->prepare('INSERT INTO ParkingSpaces (lot_id,number) VALUES (?,?)');
             $query->bind_param('ii', $lot_id, $i);
             $query->execute();
         }

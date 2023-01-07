@@ -1,17 +1,12 @@
 <?php
+
 session_start();
 if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     header ("Location: Login.php");
     die();
 }
+include ('Header.php');
 ?>
-<html lang="lv">
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.2.js"
-            integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
-            crossorigin="anonymous"></script>
-    <title>Autostāvlaukuma izveide</title>
-</head>
 <div>
     <p>Šeit būs input form, lai izveidotu jaunu stāvlaukumu</p>
 </div>
@@ -19,7 +14,7 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     <label for="address">Adrese:</label><br>
     <input type="text" id="address" name="address" maxlength="75" minlength="5"><br>
     <label for="spaceCount">Vietu skaits stāvlaukumā:</label><br>
-    <input type="number" id="spaceCount" name="spaceCount" min="1" size="5"><br>
+    <input type="number" id="spaceCount" name="spaceCount" min="1" max="999" size="5"><br>
     <label for="hourlyRate">Stundas maksa par vietu stāvlaukumā:</label><br>
     <input type="number" id="hourlyRate" name="hourlyRate" min="0" size="5" step="0.1"><br><br>
     <input type="submit" value="Iesniegt">
@@ -31,10 +26,7 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
         let address = $("#address").val().toString();
         let spaceCount = parseInt($("#spaceCount").val());
         let hourlyRate = parseFloat($("#hourlyRate").val());
-        //console.log(address+" "+spaceCount+" "+hourlyRate+" ");
-        /*console.log(typeof address);
-        console.log(typeof spaceCount);
-        console.log(typeof hourlyRate);*/
+        //let ownerId = JSON.parse(<?php echo json_encode($_SESSION['userId']);?>);
         $.ajax({
             type: "POST",
             url: "../Controllers/AjaxController.php",
@@ -42,6 +34,7 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
                 'address': address,
                 'spaceCount': spaceCount,
                 'hourlyRate': hourlyRate,
+                //'owner_id' : ownerId,
                 'action' : 'lotCreate',
             },
             dataType: "json",

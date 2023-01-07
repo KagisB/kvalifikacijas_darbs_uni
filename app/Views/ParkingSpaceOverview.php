@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 include ('Header.php');
 echo $_GET['lotId'];
@@ -67,9 +68,9 @@ echo $_GET['lotId'];
                     spaceBox.appendChild(content);
 
                     if(space['reservation_status']){
-                        spaceBox.style.backgroundColor = 'LightCoral';
+                        spaceBox.style.backgroundColor = 'MidnightBlue';
                     }
-                    else spaceBox.style.backgroundColor = 'LawnGreen';
+                    else spaceBox.style.backgroundColor = 'LemonChiffon';
                     spaceCount++;
                     addRedirectForm(spaceBox);
                     $('#parkingSpaceDisplay').on('click','#'+spaceBox.id,function(){
@@ -110,7 +111,7 @@ echo $_GET['lotId'];
             lotIdInput.type="hidden";
 
             let logInReminder = document.createElement('p');
-            let logInReminderText = document.createTextNode("Lai rezervētu, jāielogojas");
+            let logInReminderText = document.createTextNode("Lai rezervētu, jāieiet sistēmā");
             logInReminder.appendChild(logInReminderText);
             logInReminder.style.backgroundColor="LightCoral";
 

@@ -16,9 +16,9 @@ if (isset($_SESSION['logInStatus']) && $_SESSION['logInStatus'] === true) {
     <p>Autorizācijas view.</p>
 </div>
 <form id="signInForm" method = post action = ../Controllers/AjaxController.php>
-    Username:<input type="text" id="name" name="name" required><br>
-    Password:<input type="password" id="password" name="password" required><br>
-    <input type="submit" name="Log in">
+    Lietotājvārds:<input type="text" id="name" name="name" required><br>
+    Parole:<input type="password" id="password" name="password" required><br>
+    <input type="submit" name="Ieiet">
 </form>
 </html>
 <script>

@@ -1,23 +1,20 @@
 <?php
+
+include ('Header.php');
 ?>
-<html lang="lv">
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.2.js"
-            integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
-            crossorigin="anonymous"></script>
-    <title>Reģistrēšanās</title>
-</head>
 <div id="Intro">
     <p>Reģistrēšanās view.</p>
 </div>
 <form id="signUpForm" method="post" action="../Controllers/AjaxController.php">
     <label for="username">Lietotājvārds:</label><br>
-    <input type="text" id="username" name="username" maxlength="25" minlength="6"><br>
+    <input type="text" id="username" name="username" minlength="6" maxlength="25" ><br>
     <label for="email">E-pasts:</label><br>
-    <input type="email" id="email" name="email"><br>
+    <input type="email" id="email" name="email" minlength="3" maxlength="64"><br>
     <label for="password">Parole:</label><br>
-    <input type="text" id="password" name="password" min="8" max="25"><br><br>
-    <input type="submit" value="Iesniegt">
+    <input type="password" id="password" name="password" minlength="8" maxlength="25"><br><br>
+    <label for="passwordRepeat">Jaunā parole atkārtoti:</label><br>
+    <input type="password" id="passwordRepeat" name="passwordRepeat" minlength="8" maxlength="25"><br>
+    <input type="submit" value="Reģistrēties">
 </form>
 <script>
     $("#signUpForm").submit(function(e) {
@@ -27,22 +24,25 @@
         let username = $("#username").val().toString();
         let email = $("#email").val().toString();
         let password = $("#password").val().toString();
-        $.ajax({
-            type: "POST",
-            url: "../Controllers/AjaxController.php",
-            data: {
-                'username': username,
-                'email': email,
-                'password': password,
-                'action' : 'userSignUp',
-            },
-            success: function(data)
-            {
-                window.location = 'Index.php';
-                //redirect uz homepage, tagad logged in/signed up.
-            }
-        });
-
+        let passwordRepeat = $("#passwordRepeat").val().toString();
+        if(password === passwordRepeat){
+            $.ajax({
+                type: "POST",
+                url: "../Controllers/AjaxController.php",
+                data: {
+                    'username': username,
+                    'email': email,
+                    'password': password,
+                    'action' : 'userSignUp',
+                },
+                success: function(data)
+                {
+                    window.location = 'Index.php';
+                    //redirect uz homepage, tagad logged in/signed up.
+                }
+            });
+        }
+        else alert("Paroles nesakrīt!");
     });
 </script>
 </html>

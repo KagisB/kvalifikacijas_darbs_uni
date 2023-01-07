@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     header ("Location: Login.php");
@@ -10,9 +11,13 @@ include ('Header.php');
     <p>Lietotāja info, varbūt pievienot iespēju izdzēst kontu vai rediģēt?</p>
 </div>
 <div id="userInfo">
-    <div id="userName">Lietotājs: </div>
-    <div id="email">Epasts: </div>
-    <div id="status">Grupa: </div>
+    <div id="username"></div>
+    <div id="email"></div>
+    <div id="status"></div>
+</div>
+<div id="editUserInfo">
+    <form id="editForm" method="post" action="UserEdit.php" class="d-none"></form>
+    <button id="editButton">Rediģēt lietotāja datus</button>
 </div>
 <p id="pageTitle">Lietotāja rezervācijas saraksts: </p>
 <div id="reservationList">
@@ -58,25 +63,58 @@ include ('Header.php');
             url:"../Controllers/AjaxController.php",
             async:true,
             //dataType:JSON,
-            data: "action=userGet",
+            data: {
+                'action' : 'userGet',
+            },
             success: function(data){
                 let user = JSON.parse(data);
-                $('#userName').innerHTML += user.username;
-                $('#email').innerHTML += user.email;
+                console.log(user);
+                //let editForm = ;
+                //createUserEditRedirect(editForm, user);
+                let editForm = document.getElementById('editForm');
+                createUserEditRedirect(editForm, user);
+                //let usernameBox = document.getElementById('username');
+                //let usernameText = document.createTextNode('Lietotājs: '+user.username);
+                let textBox = document.createTextNode("Lietotājvārds: "+user.username);
+                document.getElementById('username').appendChild(textBox);
+                textBox = document.createTextNode("Epasts: "+user.email);
+                document.getElementById('email').appendChild(textBox);
                 switch(user.status){
                     case 0:
-                        $('#status').innerHTML += "Lietotājs";
+                        textBox = document.createTextNode("Grupa: Lietotājs");
+                        document.getElementById('status').appendChild(textBox);
                         break;
                     case 1:
-                        $('#status').innerHTML += "Moderators";
+                        textBox = document.createTextNode("Grupa: Moderators");
+                        document.getElementById('status').appendChild(textBox);
                         break;
                     case 2:
-                        $('#status').innerHTML += "Administrators";
+                        textBox = document.createTextNode("Grupa: Administrators");
+                        document.getElementById('status').appendChild(textBox);
                         break;
                 }
             }
         });
+        document.getElementById('editButton').addEventListener("click",submitForm,false)
     });
+    function submitForm() {
+        document.getElementById('editForm').submit();
+    }
+    function createUserEditRedirect(editForm, user){
+
+        let usernameInput = document.createElement('input');
+        usernameInput.name = "username";
+        usernameInput.value = user.username;
+        usernameInput.type="hidden";
+
+        let emailInput = document.createElement('input');
+        emailInput.name="email";
+        emailInput.value=user.email;
+        emailInput.type="hidden";
+
+        editForm.appendChild(usernameInput);
+        editForm.appendChild(emailInput);
+    }
     function createSpaceRedirect(reservation){
         let linkForm = document.createElement("form");
         linkForm.method = "POST";

@@ -19,14 +19,17 @@ final class AddPayementsTable extends AbstractMigration
     public function change(): void
     {
         $exists = $this->hasTable('Payments');
+        $date = new DateTime("now");
         if($exists){
             $table = $this->table('Payments')->drop()->save();
         }
         $table = $this->table('Payments');
         $table->addColumn('user_id','integer')
             ->addForeignKey('user_id','Users','id',['delete'=> 'NO_ACTION', 'update'=> 'NO_ACTION'])
-            ->addColumn('sum', 'integer')
+            ->addColumn('sum', 'float')
+            ->addColumn('created_at', 'datetime', ['default' => $date->format(DATE_ATOM)])
             ->addColumn('execution_time', 'datetime')
+            ->addColumn('is_paid', 'boolean', ['default' => false])
             ->create();
     }
 }

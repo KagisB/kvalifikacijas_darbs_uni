@@ -33,8 +33,10 @@ include ('Header.php');
 </button>
 <script>
     $(function() {
-        document.getElementById("username").value = JSON.parse(<?php echo json_encode($_POST['username'])?>);
-        document.getElementById("email").value = JSON.parse(<?php echo json_encode($_POST['email'])?>);
+        document.getElementById("username").value = <?php echo json_encode($_POST['username']);?>;
+        //document.getElementById("username").value = <?php //echo $_POST['username']?>;
+        document.getElementById("email").value = <?php echo json_encode($_POST['email']);?>;
+        //document.getElementById("email").value = <?php //echo $_POST['email']?>;
         document.getElementById("deleteButton").addEventListener("click",deleteUser,false);
         function deleteUser() {
             let userId = JSON.parse(<?php echo json_encode($_SESSION['userId'])?>);
@@ -47,7 +49,7 @@ include ('Header.php');
                 },
                 dataType: "json",
                 success: function (response) {
-                    window.location = 'ParkingLotList.php';
+                    window.location = 'UserProfileView.php';
                     //alert("success");
                 },
                 error: function (response) {
@@ -63,7 +65,7 @@ include ('Header.php');
             let passwordRepeat = $("#passwordRepeat").val().toString();
             if(password === passwordRepeat){
                 let username = $("#username").val().toString();
-                let email = $("#email).val().toString();
+                let email = $("#email").val().toString();
                 $.ajax({
                     type: "POST",
                     url: "../Controllers/AjaxController.php",
@@ -73,7 +75,7 @@ include ('Header.php');
                         'newPassword' : password,
                         'action': 'userEdit',
                     },
-                    dataType: "json",
+                    //dataType: "json",
                     success: function (response) {
                         window.location = 'ParkingLotList.php';
                         //alert("success");

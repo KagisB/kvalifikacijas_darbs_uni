@@ -41,7 +41,7 @@ if(!empty($_POST['action'])){
             break;
         case 'userSignUp':
             if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])) {
-                if((new UserController)->signUp()) {
+                if((new UserController)->signUp($_POST['username'],$_POST['password'],$_POST['email'])) {
                     echo json_encode(true);
                     break;
                 }
@@ -92,7 +92,8 @@ if(!empty($_POST['action'])){
             break;
         case 'lotCreate':
             if(isset($_POST['address']) && isset($_POST['spaceCount']) && isset($_POST['hourlyRate'])) {
-                if((new LotController())->addLot($_POST['address'],$_POST['spaceCount'],$_POST['hourlyRate'])) {
+                $userId = (new UserController())->getUserId();
+                if((new LotController())->addLot($_POST['address'],$_POST['spaceCount'],$_POST['hourlyRate'],$userId)) {
                     echo json_encode(true);
 
                     break;
@@ -102,6 +103,28 @@ if(!empty($_POST['action'])){
             $errors['setData']="Nav ievadīti stāvlaukuma dati!";
             $jErrors = json_encode($errors);
             echo $jErrors;
+
+            break;
+        case 'lotEdit':
+            if(isset($_POST['lotId']) && (isset($_POST['address']) || isset($_POST['spaceCount']) || isset($_POST['hourlyRate']))){
+                if((new LotController())->editLot($_POST['lotId'],$_POST['address'],$_POST['spaceCount'],$_POST['hourlyRate'])){
+                    echo json_encode(true);
+
+                    break;
+                }
+                $errors['lotEdit']="Kļūda stāvlaukuma rediģēšanā!";
+            }
+            $errors['setData']="Nav ievadīti stāvlaukuma dati!";
+            $jErrors = json_encode($errors);
+            echo $jErrors;
+
+            break;
+        case 'lotremove':
+            if(isset($_POST['lotId'])){
+                echo json_encode((new LotController())->removeLot($_POST['lotId']));
+
+                break;
+            }
 
             break;
         case 'spaceLoad':
