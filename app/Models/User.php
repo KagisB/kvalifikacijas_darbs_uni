@@ -45,7 +45,7 @@ class User{
          * */
         $password_hash = password_hash($password,PASSWORD_BCRYPT);
         $connection = (new DBConnection())->createMySQLiConnection();
-        $query = $connection->prepare('INSERT INTO Users VALUES(?,?,?)');
+        $query = $connection->prepare('INSERT INTO Users (`username`,`password`,`email`) VALUES(?,?,?)');
         $query->bind_param('sss', $username, $password_hash, $email);
         $query->execute();
         $connection->close();

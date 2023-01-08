@@ -7,6 +7,7 @@ require_once "../../vendor/autoload.php";
 use App\Models\DBConnection as DBConnection;
 use Cassandra\Date;
 use Datetime;
+use DateTimeZone;
 
 class Reservation{
     public int $id;
@@ -49,14 +50,26 @@ class Reservation{
         return false;
     }
 
-    public function getReservationIdsByUserId(int $user_id) : array
+    public function getReservationIdsByUserId(int $user_id, string $from="", string $till="") : array
     {
         /*
          * atgriezt visas rezervācijas noteiktā periodā? kuras rezervējis konkrēts lietotājs
          * */
-        $from = date('Y-m-d H:i:s');
-        $till = new Datetime('now');
-        $till->modify('+1 month');
+        if(empty($from)){
+            $dateFrom = new DateTime('now',new DateTimeZone('Europe/Riga'));
+            $timeFrom = date('Y-m-d H:i:s',$dateFrom->getTimestamp());
+        }
+        else{
+            $timeFrom = $from;
+        }
+        if(empty($till)){
+            $tillDate = new DateTime('now',new DateTimeZone('Europe/Riga'));
+            $tillDate->modify('+1 month');
+            $timeTill = date('Y-m-d H:i:s',$tillDate->getTimestamp());
+        }
+        else{
+            $timeTill = $till;
+        }
         $connection = (new DBConnection())->createPDOConnection();
         $sql = <<<MySQL
             SELECT id FROM Reservations 
@@ -65,10 +78,9 @@ class Reservation{
             OR (`from` > :from AND till < :timeTill)
             OR (`from` > :from AND till > :timeTill)
         MySQL;
-        $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());
         $params = [
             'user_id' => $user_id,
-            'from' => $from,
+            'from' => $timeFrom,
             'timeTill' => $timeTill,
         ];
         $query = $connection->prepare($sql);

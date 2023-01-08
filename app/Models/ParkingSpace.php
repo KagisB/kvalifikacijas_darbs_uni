@@ -8,6 +8,7 @@ require_once "../../vendor/autoload.php";
 
 use App\Models\Reservation as Reservation;
 use DateTime;
+use DateTimeZone;
 
 class ParkingSpace{
     public int $id;
@@ -69,8 +70,8 @@ class ParkingSpace{
          * no datubāzes, ja ir rezervēts laika periodā, atgriezt true
          * Iesaistīt Reservation tabulu/modeli
          * */
-        $timeNow = date('Y-m-d H:i:s');
-        return (new Reservation)->checkSpaceReservation($id,$timeNow);
+        $dateNow = new DateTime('now',new DateTimeZone('Europe/Riga'));
+        return (new Reservation)->checkSpaceReservation($id,$dateNow->format('Y-m-d H:i:s'));
     }
 
     public function addSpace(int $lot_id, int $number) : bool
@@ -162,3 +163,5 @@ class ParkingSpace{
         return $query;
     }
 }
+$id=3;
+echo (new ParkingSpace)->isReserved($id);

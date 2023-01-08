@@ -34,7 +34,7 @@
             success: function(data){
                 let user = JSON.parse(data);
                 if(user){
-                    if(user.status>0){
+                    if(user.status>=0){
                         //$('#userProfile').setAttribute("href","UserProfileView.php");
                         //document.getElementById("userProfile").href += "?userId="+user.id;
                         $('#logIn').removeClass(" visible").addClass(" invisible");

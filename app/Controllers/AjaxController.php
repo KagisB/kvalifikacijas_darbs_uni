@@ -119,7 +119,7 @@ if(!empty($_POST['action'])){
             echo $jErrors;
 
             break;
-        case 'lotremove':
+        case 'lotRemove':
             if(isset($_POST['lotId'])){
                 echo json_encode((new LotController())->removeLot($_POST['lotId']));
 

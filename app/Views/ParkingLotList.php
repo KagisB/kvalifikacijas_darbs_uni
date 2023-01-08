@@ -13,7 +13,7 @@ include ('Header.php');
 <div id="lotList">
 
 </div>
-<button id="createLot">
+<button id="createLot" style="visibility: hidden">
     <a href="ParkingLotCreation.php">Pievienot jaunu stāvlaukumu</a>
 </button>
 <script>
@@ -135,6 +135,21 @@ include ('Header.php');
                 removeButton.value= "Izdzēst stāvlaukumu";
                 let removeText = document.createTextNode('Izdzēst stāvlaukumu')
                 removeButton.appendChild(removeText);
+                $('#lotList').on('click','#removeButton'+lot.id,function(){
+                    //Pievienot jautājumu vai tiešām izdzēst
+                    $.ajax({
+                        type: "POST",
+                        url:"../Controllers/AjaxController.php",
+                        async:true,
+                        data: {
+                            'lotId' : lot.id,
+                            'action': "lotRemove",
+                        },
+                        success: function(data){
+                            location.reload();
+                        }
+                    });
+                });
                 lotBox.appendChild(removeButton);
             }
         }

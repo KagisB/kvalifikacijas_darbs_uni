@@ -4,14 +4,8 @@ if (isset($_SESSION['logInStatus']) && $_SESSION['logInStatus'] === true) {
     header ("Location: Index.php");
     die();
 }
+include ('Header.php');
 ?>
-<html lang="lv">
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.2.js"
-            integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
-            crossorigin="anonymous"></script>
-    <title>Login</title>
-</head>
 <div id="Intro">
     <p>Autorizācijas view.</p>
 </div>
@@ -20,6 +14,9 @@ if (isset($_SESSION['logInStatus']) && $_SESSION['logInStatus'] === true) {
     Parole:<input type="password" id="password" name="password" required><br>
     <input type="submit" name="Ieiet">
 </form>
+<div>
+    Neesi reģistrējies? <a href="Signup.php">Piereģistrējies šeit</a>
+</div>
 </html>
 <script>
     $("#signInForm").submit(function(e) {

@@ -66,14 +66,15 @@ echo $_GET['lotId'];
                     spaceBox.id=space["id"];
                     let content = document.createTextNode('Stāvvietas numurs: '+space["number"]);
                     spaceBox.appendChild(content);
-
-                    if(space['reservation_status']){
+                    if(space['reservationStatus']){
                         spaceBox.style.backgroundColor = 'MidnightBlue';
+                        spaceBox.style.color = "White";
                     }
                     else spaceBox.style.backgroundColor = 'LemonChiffon';
                     spaceCount++;
                     addRedirectForm(spaceBox);
                     $('#parkingSpaceDisplay').on('click','#'+spaceBox.id,function(){
+                        //console.log($('#'+spaceBox.id).attr('id'));
                         if($('#spaceForm'+spaceBox.id).hasClass("d-none")){
                             $('#spaceForm'+spaceBox.id).removeClass("d-none");
                         }

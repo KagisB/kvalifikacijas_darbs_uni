@@ -66,7 +66,7 @@ class ReservationController{
     {
         $data = [];
         $user_id = $userId;
-        if(!(new User)->userExists($user_id)) {
+        if(!(new User($user_id))->userExists($user_id)) {
             return $data;
         }
         $reservations = (new Reservation())->getReservationsByUserId($user_id);
@@ -83,16 +83,16 @@ class ReservationController{
         } catch (\Exception $e) {
             $fromDate = new Datetime('now');
         }
-        /*try {
+        try{
             $tillDate = new Datetime($till);
         } catch (\Exception $e) {
             $tillDate = new Datetime('now');
-        }*/
+        }
         if(!(new ParkingSpace)->spaceExists($spaceId)) {
             echo "Error: Space does not exist";
             return false;
         }
-        if(!(new User)->userExists($userId)) {
+        if(!(new User($userId))->userExists($userId)) {
             echo "Error: User does not exist";
             return false;
         }
@@ -100,18 +100,19 @@ class ReservationController{
             echo "unable to create date from";
             return false;
         }
-        /*if(!date('Y-m-d H:i:s',strtotime($till))){
+        if(!date('Y-m-d H:i:s',strtotime($till))){
             echo "unable to create date till";
             return false;
         }
         if($tillDate<$fromDate || $tillDate===$fromDate) {
             echo "Error: Period start is after period end or exactly the same";
             return false;
-        }*/
-       /* if($interval->d > 31) {
+        }
+        $interval = $fromDate->diff($tillDate);
+        if($interval->d > 31) {
             echo "Error: Period length is longer than 31 days!";
             return false;
-        }*/
+        }
         return true;
     }
 }

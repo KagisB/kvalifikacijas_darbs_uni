@@ -151,7 +151,7 @@ include ('Header.php');
                 success: function (response) {
                     //console.log(response);
                     let lotId=JSON.parse(<?php echo json_encode($_POST['lotId']); ?>);
-                    //window.location = 'ParkingSpaceOverview.php?lotId='+lotId;
+                    window.location = 'ParkingSpaceOverview.php?lotId='+lotId;
                     //alert("success");
                 },
                 error: function (response) {
