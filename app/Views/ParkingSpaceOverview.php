@@ -2,18 +2,17 @@
 
 session_start();
 include ('Header.php');
-echo $_GET['lotId'];
+//echo $_GET['lotId'];
 ?>
-
-<div id="lotInfo" class="container-sm text-dark text-center">
-    Lai izvēlētos stāvvietu, kurai veik rezervāciju, nospiediet uz stāvvietas kastes. Tad, nospiežiet pogu rezervēt. Ja kaste ir dzeltenā krāsā, tā pašlaik nav aizņemta.
-    Ja kaste ir tumši zilā krāsā, pašlaik šī stāvvieta ir aizņemta, bet iespējams vēlāk tā būs atkal pieejama.
-</div>
-<div id="spaceDisplayContainer" class="container-fluid">
+<section id="main" class="container-fluid min-vh-100 min-vw-100">
+    <div id="lotInfo" class="container text-dark text-center">
+        Lai izvēlētos stāvvietu, kurai veik rezervāciju, nospiediet uz stāvvietas kastes. Tad, nospiežiet pogu rezervēt. Ja kaste ir dzeltenā krāsā, tā pašlaik nav aizņemta.
+        Ja kaste ir tumši zilā krāsā, pašlaik šī stāvvieta ir aizņemta, bet iespējams vēlāk tā būs atkal pieejama.
+    </div>
     <div id="parkingSpaceDisplay" class="container">
 
     </div>
-</div>
+</section>
 <script>
     $(function(){
         $("#logOut").click(function() {
@@ -104,6 +103,7 @@ echo $_GET['lotId'];
             let submitButtonReservation = document.createElement('input');
             submitButtonReservation.type="submit";
             submitButtonReservation.value="Rezervēt";
+            submitButtonReservation.className="btn btn-info border border-dark border-2";
 
             let lotIdInput = document.createElement('input');
             lotIdInput.name="lotId";

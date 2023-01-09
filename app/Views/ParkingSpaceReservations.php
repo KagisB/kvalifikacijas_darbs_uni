@@ -8,22 +8,23 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
 //echo $_POST['lotId'];
 include ('Header.php');
 ?>
-<div>
-    <p>Šeit varēs izveidot rezervāciju</p>
-</div>
-<div id="userReservationList">
-    <form id="reservationCreate" method="post" action="../Controllers/AjaxController.php">
-        <label for="day">Rezervācijas sākuma diena:</label><br>
-        <input type="date" id="dayFrom" name="day" min="" max=""><br>
-        <label for="from">Rezervācijas laika sākums:</label><br>
-        <input type="text" id="from" class="timepicker" name="from" min="" max=""><br>
-        <div id="fromError"></div>
-        <label for="till">Rezervācijas laika beigas:</label><br>
-        <input type="text" id="till" class="timepicker" name="till" min="" max=""><br><br>
-        <div id="tillError"></div>
-        <input type="submit" value="Rezervēt">
-    </form>
-</div>
+<section id="main" class="container-fluid row min-vh-100 min-vw-100">
+    <div id="buffer" class="col"></div>
+    <div class="col-6">
+        <form id="reservationCreate" method="post" action="../Controllers/AjaxController.php">
+            <label for="day" class="form-label">Rezervācijas sākuma diena:</label><br>
+            <input type="date" id="dayFrom" name="day" min="" max=""><br>
+            <label for="from" class="form-label">Rezervācijas laika sākums:</label><br>
+            <input type="text" id="from" class="timepicker" name="from" min="" max=""><br>
+            <div id="fromError"></div>
+            <label for="till" class="form-label">Rezervācijas laika beigas:</label><br>
+            <input type="text" id="till" class="timepicker" name="till" min="" max=""><br><br>
+            <div id="tillError"></div>
+            <input type="submit" value="Rezervēt">
+        </form>
+    </div>
+    <div id="buffer2" class="col"></div>
+</section>
 <script>
     $(function() {
         if(document.getElementById("dayFrom").value===""){

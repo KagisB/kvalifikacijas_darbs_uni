@@ -6,17 +6,21 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
 }
 include ('Header.php');
 ?>
-<div id="formContainer">
+<section id="main" class="container-fluid row min-vh-100 min-vw-100">
+    <div id="buffer" class="col"></div>
+    <div class="col-6">
     <form id="lotEdit" method="post" action="../Controllers/AjaxController.php">
-        <label for="address">Adrese:</label><br>
-        <input type="text" id="address" name="address" minlength="5" maxlength="75" value=""><br>
-        <label for="spaceCount">Vietu skaits stāvlaukumā:</label><br>
-        <input type="number" id="spaceCount" name="spaceCount" min="1" max="999" size="5" value=""><br>
-        <label for="hourlyRate">Stundas maksa par vietu stāvlaukumā:</label><br>
-        <input type="number" id="hourlyRate" name="hourlyRate" min="0" size="5" step="0.1" value=""><br><br>
-        <input type="submit" value="Rediģēt">
+        <label for="address" class="form-label">Adrese:</label><br>
+        <input type="text" id="address" name="address" minlength="5" maxlength="75" value="" class="form-control"><br>
+        <label for="spaceCount" class="form-label">Vietu skaits stāvlaukumā:</label><br>
+        <input type="number" id="spaceCount" name="spaceCount" min="1" max="999" size="5" value="" class="form-control"><br>
+        <label for="hourlyRate" class="form-label">Stundas maksa par vietu stāvlaukumā:</label><br>
+        <input type="number" id="hourlyRate" name="hourlyRate" min="0" size="5" step="0.1" value="" class="form-control"><br><br>
+        <input type="submit" value="Rediģēt" class="btn btn-primary">
     </form>
-</div>
+    </div>
+    <div id="buffer2" class="col"></div>
+</section>
 
 <script>
     $(function() {

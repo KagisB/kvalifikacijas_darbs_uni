@@ -6,17 +6,22 @@ if (isset($_SESSION['logInStatus']) && $_SESSION['logInStatus'] === true) {
 }
 include ('Header.php');
 ?>
-<div id="Intro">
-    <p>Autorizācijas view.</p>
-</div>
-<form id="signInForm" method = post action = ../Controllers/AjaxController.php>
-    Lietotājvārds:<input type="text" id="name" name="name" required><br>
-    Parole:<input type="password" id="password" name="password" required><br>
-    <input type="submit" name="Ieiet">
-</form>
-<div>
-    Neesi reģistrējies? <a href="Signup.php">Piereģistrējies šeit</a>
-</div>
+<section id="main" class="container-fluid row min-vh-100 min-vw-100">
+    <div id="buffer" class="col"></div>
+    <div class="col-6">
+        <form id="signInForm" method = post action = ../Controllers/AjaxController.php class="">
+                <label for="username" class="form-label">Lietotājvārds:</label><br>
+                <input type="text" id="name" name="name" required class="form-control" size="8"><br>
+                <label for="password" class="form-label">Parole:</label><br>
+                <input type="password" id="password" name="password" required class="form-control" size="8"><br>
+            <input type="submit" name="Ieiet" class="btn btn-primary">
+            <div id="ref">
+                Neesi reģistrējies? <a href="Signup.php">Piereģistrējies šeit</a>
+            </div>
+        </form>
+    </div>
+    <div id="buffer2" class="col"></div>
+</section>
 </html>
 <script>
     $("#signInForm").submit(function(e) {

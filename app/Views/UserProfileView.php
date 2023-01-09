@@ -8,22 +8,31 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
 //echo $_SESSION['logInStatus'];
 include ('Header.php');
 ?>
-<div id="mainText">
-    <p>Lietotāja info, varbūt pievienot iespēju izdzēst kontu vai rediģēt?</p>
-</div>
-<div id="userInfo">
-    <div id="username"></div>
-    <div id="email"></div>
-    <div id="status"></div>
-</div>
-<div id="editUserInfo">
-    <form id="editForm" method="post" action="UserEdit.php" class="d-none"></form>
-    <button id="editButton">Rediģēt lietotāja datus</button>
-</div>
-<p id="pageTitle">Lietotāja rezervācijas saraksts: </p>
-<div id="reservationList">
+<section id="main" class="container-fluid min-vh-100 min-vw-100">
+    <div class="row">
+        <div id="buffer" class="col bg-info"></div>
+        <div id="userInfo" class="col-6">
+            <div id="username"></div>
+            <div id="email"></div>
+            <div id="status"></div>
+            <div id="editUserInfo">
+                <form id="editForm" method="post" action="UserEdit.php" class="d-none"></form>
+                <button id="editButton" class="btn btn-info border border-dark border-2">Rediģēt lietotāja datus</button>
+            </div>
+        </div>
+        <div id="buffer2" class="col bg-info bg-gradient"></div>
+    </div>
+    <div class="row min-vh-100">
+        <div id="buffer" class="col bg-info"></div>
+        <div id="reservationUsers" class="col-6">
+            <p id="pageTitle">Lietotāja rezervācijas saraksts: </p>
+            <div id="reservationList">
 
-</div>
+            </div>
+        </div>
+        <div id="buffer2" class="col bg-info"></div>
+    </div>
+</section>
 <script>
     $(function(){
         let userId = JSON.parse(<?php echo json_encode($_SESSION['userId'])?>);
@@ -69,13 +78,11 @@ include ('Header.php');
             },
             success: function(data){
                 let user = JSON.parse(data);
-                console.log(user);
+                //console.log(user);
                 //let editForm = ;
                 //createUserEditRedirect(editForm, user);
                 let editForm = document.getElementById('editForm');
                 createUserEditRedirect(editForm, user);
-                //let usernameBox = document.getElementById('username');
-                //let usernameText = document.createTextNode('Lietotājs: '+user.username);
                 let textBox = document.createTextNode("Lietotājvārds: "+user.username);
                 document.getElementById('username').appendChild(textBox);
                 textBox = document.createTextNode("Epasts: "+user.email);

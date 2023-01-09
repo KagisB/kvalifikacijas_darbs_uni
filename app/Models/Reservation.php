@@ -5,7 +5,6 @@ namespace App\Models;
 require_once "../../vendor/autoload.php";
 
 use App\Models\DBConnection as DBConnection;
-use Cassandra\Date;
 use Datetime;
 use DateTimeZone;
 
@@ -42,8 +41,6 @@ class Reservation{
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('INSERT INTO Reservations (`user_id`,`space_id`,`from`,`till`,`reservation_code`) VALUES (?,?,?,?,?)');
         $code = $this->generateRandomString();
-        //$timeFrom = date('Y-m-d H:i:s',strtotime($from));
-        //$timeTill = date('Y-m-d H:i:s',strtotime($till));
         $query->bind_param('iisss', $user_id, $space_id, $from, $till, $code);
         $query->execute();
         $connection->close();

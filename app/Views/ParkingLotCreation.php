@@ -7,18 +7,21 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
 }
 include ('Header.php');
 ?>
-<div>
-    <p>Šeit būs input form, lai izveidotu jaunu stāvlaukumu</p>
-</div>
-<form id="lotCreate" method="post" action="../Controllers/AjaxController.php">
-    <label for="address">Adrese:</label><br>
-    <input type="text" id="address" name="address" maxlength="75" minlength="5"><br>
-    <label for="spaceCount">Vietu skaits stāvlaukumā:</label><br>
-    <input type="number" id="spaceCount" name="spaceCount" min="1" max="999" size="5"><br>
-    <label for="hourlyRate">Stundas maksa par vietu stāvlaukumā:</label><br>
-    <input type="number" id="hourlyRate" name="hourlyRate" min="0" size="5" step="0.1"><br><br>
-    <input type="submit" value="Iesniegt">
-</form>
+<section id="main" class="container-fluid row min-vh-100 min-vw-100">
+    <div id="buffer" class="col"></div>
+    <div class="col-6">
+    <form id="lotCreate" method="post" action="../Controllers/AjaxController.php">
+        <label for="address" class="form-label">Adrese:</label><br>
+        <input type="text" id="address" name="address" maxlength="75" minlength="5" required class="form-control"><br>
+        <label for="spaceCount" class="form-label">Vietu skaits stāvlaukumā:</label><br>
+        <input type="number" id="spaceCount" name="spaceCount" min="1" max="999" size="5" required class="form-control"><br>
+        <label for="hourlyRate" class="form-label">Stundas maksa par vietu stāvlaukumā:</label><br>
+        <input type="number" id="hourlyRate" name="hourlyRate" min="0" size="5" step="0.1" required class="form-control"><br><br>
+        <input type="submit" value="Iesniegt" class="btn btn-primary">
+    </form>
+    </div>
+    <div id="buffer2" class="col"></div>
+</section>
 <script>
     $("#lotCreate").submit(function(e) {
 

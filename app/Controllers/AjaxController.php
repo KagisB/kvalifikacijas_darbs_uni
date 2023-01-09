@@ -100,9 +100,9 @@ if(!empty($_POST['action'])){
 
                     break;
                 }
-                $errors['lotCreate']="Kļūda stāvlaukuma izveidē!";
+                $error[]="Kļūda stāvlaukuma izveidē!";
             }
-            $error="Nav ievadīti stāvlaukuma dati!";
+            $error[]="Nav ievadīti stāvlaukuma dati!";
             $jErrors = json_encode($error);
             echo $jErrors;
 

@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 </head>
-<section class="header">
+<section class="header min-vw-100">
     <div class="container-fluid bg-primary">
         <nav id="linkMenu" class="nav justify-content-end">
             <a class="navbar-brand col-md text-light" href="#">Rezervācijas sistēma</a>

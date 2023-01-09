@@ -7,30 +7,26 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
 }
 include ('Header.php');
 ?>
-<html lang="lv">
-<head>
-    <script src="https://code.jquery.com/jquery-3.6.2.js"
-            integrity="sha256-pkn2CUZmheSeyssYw3vMp1+xyub4m+e+QK4sQskvuo4="
-            crossorigin="anonymous"></script>
-    <title>Autostāvlaukuma izveide</title>
-</head>
-<div>
-    <p>Šeit būs input form, lai izveidotu jaunu stāvlaukumu</p>
-</div>
-<form id="editForm" method="post" action="../Controllers/AjaxController.php">
-    <label for="username">Lietotājvārds:</label><br>
-    <input type="text" id="username" name="username" maxlength="25" minlength="6" value=""><br>
-    <label for="email">E-pasts:</label><br>
-    <input type="email" id="email" name="email" minlength="3" maxlength="64" value=""><br>
-    <label for="password">Jaunā parole:</label><br>
-    <input type="password" id="password" name="password" minlength="8" maxlength="25"><br>
-    <label for="passwordRepeat">Jaunā parole atkārtoti:</label><br>
-    <input type="password" id="passwordRepeat" name="passwordRepeat" minlength="8" maxlength="25"><br>
-    <input type="submit" value="Rediģēt">
-</form>
-<button id="deleteButton">
-    Dzēst kontu.
-</button>
+<section id="main" class="container-fluid row min-vh-100 min-vw-100">
+    <div id="buffer" class="col"></div>
+    <div class="col-6">
+    <form id="editForm" method="post" action="../Controllers/AjaxController.php">
+        <label for="username" class="form-label">Lietotājvārds:</label><br>
+        <input type="text" id="username" name="username" maxlength="25" minlength="6" value="" class="form-control"><br>
+        <label for="email" class="form-label">E-pasts:</label><br>
+        <input type="email" id="email" name="email" minlength="3" maxlength="64" value="" class="form-control"><br>
+        <label for="password" class="form-label">Jaunā parole:</label><br>
+        <input type="password" id="password" name="password" minlength="8" maxlength="25" class="form-control"><br>
+        <label for="passwordRepeat" class="form-label">Jaunā parole atkārtoti:</label><br>
+        <input type="password" id="passwordRepeat" name="passwordRepeat" minlength="8" maxlength="25" class="form-control"><br>
+        <input type="submit" value="Rediģēt" class="btn btn-primary">
+        <button id="deleteButton" class="btn btn-primary border border-dark border-2">
+            Dzēst kontu.
+        </button>
+    </form>
+    </div>
+    <div id="buffer2" class="col"></div>
+</section>
 <script>
     $(function() {
         document.getElementById("username").value = <?php echo json_encode($_POST['username']);?>;

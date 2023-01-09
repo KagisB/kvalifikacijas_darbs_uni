@@ -9,12 +9,6 @@ use App\Models\ParkingLot;
 use App\Models\ParkingSpace;
 
 class LotController{
-    public function getBusynessData(Datetime $from, Datetime $till)
-    {
-        /*
-         * Iegūt sarakstu ar aizņemtību noteiktajā periodā, un sagatavot datus lapai
-         * */
-    }
 
     public function getSpaces(int $id)
     {

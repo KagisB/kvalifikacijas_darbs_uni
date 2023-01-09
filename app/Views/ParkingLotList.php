@@ -5,20 +5,30 @@ include ('Header.php');
     echo $_SESSION['userId'];
 }*/
 ?>
-<section id="mainBody" class="container ">
-<div id="mainText" class="container-sm text-dark text-center shadow p-3 mb-5 bg-body rounded">
-    Lai izvēlētos stāvvietu, kurai veik rezervāciju, nospiediet uz stāvvietas kastes. Tad, nospiežiet pogu rezervēt. Ja kaste ir dzeltenā krāsā, tā pašlaik nav aizņemta.
-    Ja kaste ir tumši zilā krāsā, pašlaik šī stāvvieta ir aizņemta, bet iespējams vēlāk tā būs atkal pieejama.
-</div>
-<p id="pageTitle" class="text-dark text-center">Autostāvvietu saraksts: </p>
-<div id="lotList" class="container px-3 py-3 text-dark text-center border border-primary border-5">
-    <div id="lotListBox" class="row row-cols-3 gx-2 gy-2">
-
+<section id="main" class="container-fluid min-vh-100 min-vw-100">
+    <div id="row1" class="row min-vw-100">
+    <div id="buffer1" class="col bg-info"></div>
+    <div id="mainText" class="col-6 text-dark text-center">
+        Lai izvēlētos stāvvietu, kurai veik rezervāciju, nospiediet uz stāvvietas kastes. Tad, nospiežiet pogu rezervēt. Ja kaste ir dzeltenā krāsā, tā pašlaik nav aizņemta.
+        Ja kaste ir tumši zilā krāsā, pašlaik šī stāvvieta ir aizņemta, bet iespējams vēlāk tā būs atkal pieejama.
     </div>
-</div>
-<button id="createLot" class="btn btn-light border border-5 border-primary mx-auto invisible">
-    <a href="ParkingLotCreation.php" class="text-light">Pievienot jaunu stāvlaukumu</a>
-</button>
+    <div id="buffer2" class="col bg-info"></div>
+    </div>
+    <div id="row2" class="row min-vw-100">
+    <div id="buffer3" class="col bg-info"></div>
+    <p id="pageTitle" class="col-6 text-dark text-center">Autostāvvietu saraksts: </p>
+    <div id="buffer4" class="col bg-info"></div>
+    </div>
+    <div id="row3" class="row min-vw-100 min-vh-100">
+    <div id="buffer5" class="col bg-info"></div>
+    <div id="lotList" class="col-6 px-3 py-3 text-dark text-center">
+        <div id="lotListBox" class="row row-cols-3 gx-2 gy-2">
+
+        </div>
+        <a id="createLot" href="ParkingLotCreation.php" class="btn btn-info mx-auto invisible">Pievienot jaunu stāvlaukumu</a>
+    </div>
+    <div id="buffer6" class="col bg-info"></div>
+    </div>
 </section>
 <script>
     //d-grid gap-3
@@ -35,7 +45,7 @@ include ('Header.php');
                 //console.log(user);
                 userStatus = user.status;
                 if(user.status>0){
-                    document.getElementById("createLot").className="btn btn-primary mx-auto visible";
+                    document.getElementById("createLot").className="btn btn-info mx-auto visible";
                 }
             }
         });
@@ -90,7 +100,8 @@ include ('Header.php');
 
                 let viewButton=document.createElement('input');
                 viewButton.type = "submit";
-                viewButton.value= "Apskatīt stāvvietas"
+                viewButton.value= "Apskatīt stāvvietas";
+                viewButton.className= "btn btn-info border border-dark border-2";
 
                 viewForm.appendChild(lotIdInput);
                 viewForm.appendChild(viewButton);
@@ -123,7 +134,8 @@ include ('Header.php');
 
                 let editButton=document.createElement('input');
                 editButton.type = "submit";
-                editButton.value= "Rediģēt datus"
+                editButton.value= "Rediģēt datus";
+                editButton.className= "btn btn-info border border-dark border-2";
 
                 editForm.appendChild(lotIdInput);
                 editForm.appendChild(lotAddressInput);
@@ -139,6 +151,7 @@ include ('Header.php');
                 let removeButton=document.createElement('button');
                 removeButton.id = "removeButton"+lot.id;
                 removeButton.value= "Izdzēst stāvlaukumu";
+                removeButton.className= "btn btn-info border border-dark border-2";
                 let removeText = document.createTextNode('Izdzēst stāvlaukumu')
                 removeButton.appendChild(removeText);
                 $('#lotList').on('click','#removeButton'+lot.id,function(){
