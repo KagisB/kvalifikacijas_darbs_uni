@@ -10,9 +10,9 @@ include ('Header.php');
     <input type="text" id="username" name="username" minlength="6" maxlength="25" ><br>
     <label for="email">E-pasts:</label><br>
     <input type="email" id="email" name="email" minlength="3" maxlength="64"><br>
-    <label for="password">Parole:</label><br>
+    <label for="password">Parole(Vismaz 1 lielais burts, 1 cipars un 1 mazais burts, minimums 8 simboli):</label><br>
     <input type="password" id="password" name="password" minlength="8" maxlength="25"><br><br>
-    <label for="passwordRepeat">Jaunā parole atkārtoti:</label><br>
+    <label for="passwordRepeat">Parole atkārtoti:</label><br>
     <input type="password" id="passwordRepeat" name="passwordRepeat" minlength="8" maxlength="25"><br>
     <input type="submit" value="Reģistrēties">
 </form>
@@ -37,7 +37,7 @@ include ('Header.php');
                 },
                 success: function(data)
                 {
-                    window.location = 'Index.php';
+                    window.location = 'Login.php';
                     //redirect uz homepage, tagad logged in/signed up.
                 }
             });

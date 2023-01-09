@@ -36,6 +36,9 @@ class Reservation{
         if($this->checkSpaceReservationBeforeCreation($space_id,$from,$till)){
             return false;
         }
+        if($this->checkUserReservation($user_id,$from,$till)){
+            return false;
+        }
         $connection = (new DBConnection())->createMySQLiConnection();
         $query = $connection->prepare('INSERT INTO Reservations (`user_id`,`space_id`,`from`,`till`,`reservation_code`) VALUES (?,?,?,?,?)');
         $code = $this->generateRandomString();
@@ -74,9 +77,9 @@ class Reservation{
         $sql = <<<MySQL
             SELECT id FROM Reservations 
             WHERE user_id = :user_id
-            AND (`from` < :from AND till < :timeTill)
+            AND (`from` < :from AND till < :timeTill AND `till` > :from)
             OR (`from` > :from AND till < :timeTill)
-            OR (`from` > :from AND till > :timeTill)
+            OR (`from` > :from AND till > :timeTill AND `from` < :timeTill)
         MySQL;
         $params = [
             'user_id' => $user_id,
@@ -86,7 +89,7 @@ class Reservation{
         $query = $connection->prepare($sql);
         $query->execute($params);
         $connection=null;
-        $reservationIds = null;
+        $reservationIds = [];
         while($row = $query->fetch()){
             $reservationIds[] = $row['id'];
         }
@@ -161,12 +164,12 @@ class Reservation{
         return $reservations;
     }
 
-    public function checkUserReservation(int $user_id,Datetime $from, Datetime $till) : bool
+    public function checkUserReservation(int $user_id,string $from, string $till) : bool
     {
         /*
          * Pārbaudīt, vai lietotājam ir rezervācija noteiktajā laika periodā
          * */
-        if(is_null($this->getReservationIdsByUserId($user_id,$from,$till))){
+        if(empty($this->getReservationIdsByUserId($user_id,$from,$till))){
             return false;
         }
         return true;
@@ -177,10 +180,9 @@ class Reservation{
         $connection = (new DBConnection())->createPDOConnection();
         $sql = <<<MySQL
             SELECT id FROM Reservations 
-            WHERE space_id = :space_id
-            AND (`from` < :timeNow AND 'till' > :timeNow)
+            WHERE `space_id` = :space_id
+            AND `from` < :timeNow AND `till` > :timeNow
         MySQL;
-        //$timeNow = date('Y-m-d H:i:s',$timeNow->getTimestamp());
         $params = [
             'space_id' => $space_id,
             'timeNow' => $timeNow,
@@ -194,16 +196,18 @@ class Reservation{
         }
         return true;
     }
-
+    /*
+     * Pārbauda, vai stāvvietai jau nav rezervācija šajā laika periodā.
+     * */
     public function checkSpaceReservationBeforeCreation(int $space_id, string $from, string $till) :bool
     {
         $connection = (new DBConnection())->createPDOConnection();
         $sql = <<<MySQL
             SELECT id FROM Reservations 
             WHERE space_id = :space_id
-            AND (`from` <= :from AND 'till' <= :till AND `till` >= :from)
-            OR (`from` >= :from AND 'till' <= :till)
-            OR (`from` >= :from AND 'till' >= :till AND `from` <= :till)
+            AND ((`from` <= :from AND `till` <= :till AND `till` >= :from)
+            OR (`from` >= :from AND `till` <= :till)
+            OR (`from` >= :from AND `till` >= :till AND `from` <= :till))
         MySQL;
         $params = [
             'space_id' => $space_id,

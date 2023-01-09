@@ -26,30 +26,33 @@ include ('Header.php');
         let address = $("#address").val().toString();
         let spaceCount = parseInt($("#spaceCount").val());
         let hourlyRate = parseFloat($("#hourlyRate").val());
-        //let ownerId = JSON.parse(<?php echo json_encode($_SESSION['userId']);?>);
-        $.ajax({
-            type: "POST",
-            url: "../Controllers/AjaxController.php",
-            data: {
-                'address': address,
-                'spaceCount': spaceCount,
-                'hourlyRate': hourlyRate,
-                //'owner_id' : ownerId,
-                'action' : 'lotCreate',
-            },
-            dataType: "json",
-            success: function(response)
-            {
-                window.location = 'ParkingLotList.php';
-                //alert("success");
-            },
-            error: function(response)
-            {
-                //console.log(response);
-                alert("error");
-            },
-        });
-
+        console.log(hourlyRate);
+        //let ownerId = JSON.parse(<?php //echo json_encode($_SESSION['userId']);?>);
+        if(spaceCount> 0 && hourlyRate >= 0){
+            $.ajax({
+                type: "POST",
+                url: "../Controllers/AjaxController.php",
+                data: {
+                    'address': address,
+                    'spaceCount': spaceCount,
+                    'hourlyRate': hourlyRate,
+                    //'owner_id' : ownerId,
+                    'action' : 'lotCreate',
+                },
+                dataType: "json",
+                success: function(response)
+                {
+                    window.location = 'ParkingLotList.php';
+                    //alert("success");
+                },
+                error: function(response)
+                {
+                    console.log(response);
+                    alert("response");
+                },
+            });
+        }
+        else alert("Stundas maksa vai stāvvietu skaits nav atbilstošs!");
     });
 </script>
 </html>

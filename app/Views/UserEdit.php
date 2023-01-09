@@ -77,7 +77,7 @@ include ('Header.php');
                     },
                     //dataType: "json",
                     success: function (response) {
-                        window.location = 'ParkingLotList.php';
+                        window.location = 'UserProfileView.php';
                         //alert("success");
                     },
                     error: function (response) {

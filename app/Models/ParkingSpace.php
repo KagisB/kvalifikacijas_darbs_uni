@@ -71,7 +71,8 @@ class ParkingSpace{
          * Iesaistīt Reservation tabulu/modeli
          * */
         $dateNow = new DateTime('now',new DateTimeZone('Europe/Riga'));
-        return (new Reservation)->checkSpaceReservation($id,$dateNow->format('Y-m-d H:i:s'));
+        $dateString = $dateNow->format('Y-m-d H:i:s');
+        return (new Reservation)->checkSpaceReservation($id,$dateString);
     }
 
     public function addSpace(int $lot_id, int $number) : bool
@@ -163,5 +164,3 @@ class ParkingSpace{
         return $query;
     }
 }
-$id=3;
-echo (new ParkingSpace)->isReserved($id);

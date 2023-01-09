@@ -5,6 +5,7 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     header ("Location: Login.php");
     die();
 }
+//echo $_SESSION['logInStatus'];
 include ('Header.php');
 ?>
 <div id="mainText">
@@ -43,9 +44,9 @@ include ('Header.php');
                     let reservationBox = document.createElement('div');
                     reservationBox.id = reservation.id;
                     let reservationSpace = document.createTextNode("Vietas numurs: "+reservation.space_id);
-                    let reservationCode = document.createTextNode("Rezervācijas kods: "+reservation.reservation_code);
-                    let reservationFrom = document.createTextNode("Rezervācijas sākums: "+reservation.from);
-                    let reservationTill = document.createTextNode("Rezervācijas beigas: "+reservation.till);
+                    let reservationCode = document.createTextNode(", Rezervācijas kods: "+reservation.reservation_code);
+                    let reservationFrom = document.createTextNode(", Rezervācijas sākums: "+reservation.from);
+                    let reservationTill = document.createTextNode(", Rezervācijas beigas: "+reservation.till);
 
                     //let spaceOverviewBox = createSpaceRedirect(reservation);
 
@@ -127,6 +128,7 @@ include ('Header.php');
         linkInput.name = "spaceId";
         let linkToSpace = document.createElement("button");
         linkToSpace.type = "submit";
+        linkToSpace.textContent = "Aiziet uz stāvvietu";
         linkToSpace.value = "Aiziet uz stāvvietu";
         //Potenciāli ieviest jaunu lapu, kurā konkrētai vietai rādītos rezervāciju pilnais saraksts?
         linkForm.appendChild(linkInput);

@@ -5,10 +5,9 @@ include ('Header.php');
 echo $_GET['lotId'];
 ?>
 
-<div id="lotInfo">
-    <p>Šeit būs saraksts ar stāvvietām konkrētā stāvlaukumā. Gan jau augšā jāpatur stāvlaukuma adrese/nosaukums,
-        tad arī visas stāvvietas, gan jau flexbox izmantojot, jāattēlo, un jāatver pop up info log, kad uzspiež uz
-        kādu no vietām. Norādījumi, ko nozīmē dažādās krāsas utt.</p>
+<div id="lotInfo" class="container-sm text-dark text-center">
+    Lai izvēlētos stāvvietu, kurai veik rezervāciju, nospiediet uz stāvvietas kastes. Tad, nospiežiet pogu rezervēt. Ja kaste ir dzeltenā krāsā, tā pašlaik nav aizņemta.
+    Ja kaste ir tumši zilā krāsā, pašlaik šī stāvvieta ir aizņemta, bet iespējams vēlāk tā būs atkal pieejama.
 </div>
 <div id="spaceDisplayContainer" class="container-fluid">
     <div id="parkingSpaceDisplay" class="container">

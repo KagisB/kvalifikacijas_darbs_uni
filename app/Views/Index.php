@@ -48,24 +48,5 @@ function reservationCreate(){
             $('#logOut').removeClass(" invisible").addClass(" visible");
             $('#userProfile').removeClass(" invisible").addClass(" visible");
         }*/
-        $("#logOut").click(function() {
-            $.ajax({
-                type: "POST",
-                url: "../Controllers/AjaxController.php",
-                data: {
-                    'action' : 'userLogOut',
-                },
-                dataType: "json",
-                success: function(response)
-                {
-                    location.reload();
-                },
-                error: function(response)
-                {
-                    alert("error")
-                },
-            });
-
-        });
     });
 </script>

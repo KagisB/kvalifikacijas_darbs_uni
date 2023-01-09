@@ -13,8 +13,8 @@ include ('Header.php');
 </div>
 <div id="userReservationList">
     <form id="reservationCreate" method="post" action="../Controllers/AjaxController.php">
-        <label for="day">Rezervācijas diena:</label><br>
-        <input type="date" id="day" name="day" min="" max=""><br>
+        <label for="day">Rezervācijas sākuma diena:</label><br>
+        <input type="date" id="dayFrom" name="day" min="" max=""><br>
         <label for="from">Rezervācijas laika sākums:</label><br>
         <input type="text" id="from" class="timepicker" name="from" min="" max=""><br>
         <div id="fromError"></div>
@@ -25,18 +25,15 @@ include ('Header.php');
     </form>
 </div>
 <script>
-    //const dayjs = require ('dayjs');
     $(function() {
-        if(document.getElementById("day").value===""){
+        if(document.getElementById("dayFrom").value===""){
             setMinDate();
         }
         let spaceId = JSON.parse(<?php echo json_encode($_POST['spaceId']) ?>);
-        //document.getElementById("from").addEventListener("input",changeMaxMinDate,false);
         //Uz dienas nomaiņu, jauns ajax request ar visiem rezervāciju pieprasījumiem tai stāvvietai konkrētajā dienā?
         let userId = JSON.parse(<?php echo json_encode($_SESSION['userId']);?>);
-        let day = document.getElementById("day").value.toString();
+        let day = document.getElementById("dayFrom").value.toString();
         let disabledTimes = [];
-        //console.log(day);
         $("#day").change(function(){
             $.ajax({
                 type: "POST",
@@ -75,12 +72,8 @@ include ('Header.php');
             dropdown: true,
             scrollbar: true,
             change: function(time) {
-                // the input field
-                //from = time;
-                //let formatedDate = returnDateStringFull(time);
-                //console.log(formatedDate);
                 fromTime = time.toISOString();
-                //console.log(from);
+
                 for(let interval of disabledTimes){
                     console.log(typeof interval.from);
                     console.log(typeof interval.till);
@@ -102,11 +95,8 @@ include ('Header.php');
             dropdown: true,
             scrollbar: true,
             change: function(time) {
-                // the input field
-                //let formatedDate = returnDateStringFull(time);
-                //console.log(formatedDate);
                 tillTime = time.toISOString();
-                //console.log(till);
+
                 for(let interval of disabledTimes){
                     if(interval.from >= time || interval.till <= time || time <= $('#from').value.toString()){
                         let errorText = document.createTextNode("Beigu laiks nav pieejams!");
@@ -118,54 +108,67 @@ include ('Header.php');
         $("#reservationCreate").submit(function (e) {
 
             e.preventDefault(); // avoid to execute the actual submit of the form.
-            let day = new Date($("#day").val());
+            let dayFrom = new Date($("#dayFrom").val());
 
             let realFrom = new Date(fromTime), realTill = new Date(tillTime);
-            //console.log(day);
-            //console.log(day.getFullYear());
-            realFrom.setFullYear(day.getFullYear());
-            realTill.setFullYear(day.getFullYear());
 
-            realFrom.setMonth(day.getMonth());
-            realTill.setMonth(day.getMonth());
+            realFrom.setFullYear(dayFrom.getFullYear());
+            realTill.setFullYear(dayFrom.getFullYear());
 
-            realFrom.setDate(day.getDate());
-            realTill.setDate(day.getDate());
-            //console.log(realFrom+" "+realTill)
-            let from = returnDateStringFull(realFrom);
-            let till = returnDateStringFull(realTill);
-            let spaceId = JSON.parse(<?php echo json_encode($_POST['spaceId']);?>);
-            let userId = JSON.parse(<?php echo json_encode($_POST['userId']);?>);
-            console.log(from+","+till+","+spaceId+","+userId)
-            $.ajax({
-                type: "POST",
-                url: "../Controllers/AjaxController.php",
-                data: {
-                    'from': from,
-                    'till': till,
-                    'spaceId': spaceId,
-                    'userId': userId,
-                    'action': 'reservationCreate',
-                },
-                dataType: "json",
-                success: function (response) {
-                    //console.log(response);
-                    let lotId=JSON.parse(<?php echo json_encode($_POST['lotId']); ?>);
-                    window.location = 'ParkingSpaceOverview.php?lotId='+lotId;
-                    //alert("success");
-                },
-                error: function (response) {
-                    //console.log(response);
-                    alert("error");
-                },
-            });
+            realFrom.setMonth(dayFrom.getMonth());
+            realTill.setMonth(dayFrom.getMonth());
 
+            realFrom.setDate(dayFrom.getDate());
+            realTill.setDate(dayFrom.getDate());
+
+            if(checkReservation(realFrom,realTill)){
+                let from = returnDateStringFull(realFrom);
+                let till = returnDateStringFull(realTill);
+                let spaceId = JSON.parse(<?php echo json_encode($_POST['spaceId']);?>);
+                let userId = JSON.parse(<?php echo json_encode($_POST['userId']);?>);
+                console.log(from+","+till+","+spaceId+","+userId)
+                $.ajax({
+                    type: "POST",
+                    url: "../Controllers/AjaxController.php",
+                    data: {
+                        'from': from,
+                        'till': till,
+                        'spaceId': spaceId,
+                        'userId': userId,
+                        'action': 'reservationCreate',
+                    },
+                    //dataType: "json",
+                    success: function (response) {
+                        let data = JSON.parse(response);
+                        //console.log(typeof data);
+                        if(typeof data === 'boolean'){
+                            let lotId=JSON.parse(<?php echo json_encode($_POST['lotId']); ?>);
+                            window.location = 'ParkingSpaceOverview.php?lotId='+lotId;
+                        }
+                        alert(data);
+                        /*let lotId=JSON.parse(<?php //echo json_encode($_POST['lotId']); ?>);
+                        window.location = 'ParkingSpaceOverview.php?lotId='+lotId;*/
+                    },
+                    error: function (response) {
+                        let error = JSON.parse(response.responseText);
+                        //console.log(response.responseText);
+                        alert(error);
+                    },
+                });
+            }
         });
+        function checkReservation(from,till){
+            if(till<from){
+                alert("Rezervācijas beigu laiks ir pirms sākuma laika!")
+                return false;
+            }
+            return true;
+        }
         function setMinDate(){
             let today = new Date();
             let todayString = returnDateString(today);
-            document.getElementById("day").setAttribute("min", todayString);
-            document.getElementById("day").setAttribute("value", todayString);
+            document.getElementById("dayFrom").setAttribute("min", todayString);
+            document.getElementById("dayFrom").setAttribute("value", todayString);
         }
 
         function returnDateString(currentDate){

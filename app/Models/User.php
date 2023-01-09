@@ -116,7 +116,7 @@ class User{
                 return false;
             }
         }
-        return true;
+        return false;
     }
 
     public function getUserIdByUsername(string $username) : ?int

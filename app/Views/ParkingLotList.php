@@ -5,18 +5,23 @@ include ('Header.php');
     echo $_SESSION['userId'];
 }*/
 ?>
-
-<div id="mainText">
-    <p>Šeit būs saraksts ar stāvlaukumiem, un to adresēm, kā arī vietu skaitu?</p>
+<section id="mainBody" class="container ">
+<div id="mainText" class="container-sm text-dark text-center shadow p-3 mb-5 bg-body rounded">
+    Lai izvēlētos stāvvietu, kurai veik rezervāciju, nospiediet uz stāvvietas kastes. Tad, nospiežiet pogu rezervēt. Ja kaste ir dzeltenā krāsā, tā pašlaik nav aizņemta.
+    Ja kaste ir tumši zilā krāsā, pašlaik šī stāvvieta ir aizņemta, bet iespējams vēlāk tā būs atkal pieejama.
 </div>
-<p id="pageTitle">Autostāvvietu saraksts: </p>
-<div id="lotList">
+<p id="pageTitle" class="text-dark text-center">Autostāvvietu saraksts: </p>
+<div id="lotList" class="container px-3 py-3 text-dark text-center border border-primary border-5">
+    <div id="lotListBox" class="row row-cols-3 gx-2 gy-2">
 
+    </div>
 </div>
-<button id="createLot" style="visibility: hidden">
-    <a href="ParkingLotCreation.php">Pievienot jaunu stāvlaukumu</a>
+<button id="createLot" class="btn btn-light border border-5 border-primary mx-auto invisible">
+    <a href="ParkingLotCreation.php" class="text-light">Pievienot jaunu stāvlaukumu</a>
 </button>
+</section>
 <script>
+    //d-grid gap-3
     $(function(){
         let userStatus=-1;
         $.ajax({
@@ -30,7 +35,7 @@ include ('Header.php');
                 //console.log(user);
                 userStatus = user.status;
                 if(user.status>0){
-                    document.getElementById("createLot").style.visibility="visible";
+                    document.getElementById("createLot").className="btn btn-primary mx-auto visible";
                 }
             }
         });
@@ -41,12 +46,13 @@ include ('Header.php');
             data: "action=lotLoad",
             success: function(data){
                 let json = JSON.parse(data);
-                let select = document.getElementById('lotList');
+                let select = document.getElementById('lotListBox');
                 //console.log(typeof json);
                 for(let lot of json){
-                    console.log(lot);
+                    //console.log(lot);
                     let lotBox=document.createElement('div');
                     lotBox.id="lotBox"+lot["id"];
+                    lotBox.className="p-1 bg-warning text-dark text-center border border-dark border-4";
                     let lotInfo = document.createTextNode('Adrese: '+lot["address"]+', kopējais vietu skaits: '+lot['space_count']+ ', Stundas maksa: '+lot["hourly_rate"]);
                     lotBox.appendChild(lotInfo);
                     viewForm(lotBox,lot);

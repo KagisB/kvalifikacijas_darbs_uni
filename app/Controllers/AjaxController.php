@@ -59,15 +59,17 @@ if(!empty($_POST['action'])){
 
             break;
         case 'userEdit':
-            if(isset($_POST['username']) || isset($_POST['password']) || isset($_POST['email'])){
-                if((new UserController)->checkEditUserInfo($_POST['username'],$_POST['password'],$_POST['email'])){
-                    echo json_encode(true);
-                    break;
-                }
-                $errors['editFail'] = "Nav ievadīti lietotāja dati!";
-                $jErrors = json_encode($errors);
-
-                echo $jErrors;
+            if(!isset($_POST['username'])){
+                $_POST['username'] = "";
+            }
+            if(!isset($_POST['email'])){
+                $_POST['email'] = "";
+            }
+            if(!isset($_POST['password'])){
+                $_POST['password'] = "";
+            }
+            if((new UserController)->checkEditUserInfo($_POST['username'],$_POST['password'],$_POST['email'])){
+                echo json_encode(true);
                 break;
             }
             $errors['setData'] = "Kļūda datu rediģēšanā";
@@ -100,8 +102,8 @@ if(!empty($_POST['action'])){
                 }
                 $errors['lotCreate']="Kļūda stāvlaukuma izveidē!";
             }
-            $errors['setData']="Nav ievadīti stāvlaukuma dati!";
-            $jErrors = json_encode($errors);
+            $error="Nav ievadīti stāvlaukuma dati!";
+            $jErrors = json_encode($error);
             echo $jErrors;
 
             break;
@@ -156,8 +158,8 @@ if(!empty($_POST['action'])){
 
                     break;
                 }
-                $errors['reservationCreate']="Kļūda rezervācijas izveidē!";
-                $jErrors = json_encode($errors);
+                $error = "Kļūda rezervācijas izveidē! Vai jums jau ir izveidota rezervācija šajā laikā?";
+                $jErrors = json_encode($error);
                 echo $jErrors;
 
                 break;

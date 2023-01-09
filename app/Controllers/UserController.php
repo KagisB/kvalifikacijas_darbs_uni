@@ -186,7 +186,8 @@ class UserController{
     public function deleteUser(int $userId)
     {
         if($userId === $this->getUserId()){
-            return (new User($userId))->removeUser($userId);
+            (new User($userId))->removeUser($userId);
+            return $this->logOut();
         }
         return false;
     }

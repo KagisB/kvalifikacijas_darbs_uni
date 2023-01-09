@@ -13,13 +13,14 @@
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
 </head>
 <section class="header">
-    <div class="container">
+    <div class="container-fluid bg-primary">
         <nav id="linkMenu" class="nav justify-content-end">
-            <a class="nav-link col-sm" href="Index.php">Atpakaļ uz galveno lapu</a>
-            <a class="nav-link col-sm" href="ParkingLotList.php">Autostāvlaukumi</a>
-            <a id="logIn" class="nav-link visible col-sm" href="Login.php">Ieiet sistēmā</a>
-            <a id="logOut" class="nav-link col-sm invisible">Izrakstīties no sistēmas</a>
-            <a id="userProfile" class="nav-link col-sm invisible" href="UserProfileView.php">Lietotāja profils</a>
+            <a class="navbar-brand col-md text-light" href="#">Rezervācijas sistēma</a>
+            <a class="nav-link col-sm text-light" href="Index.php">Atpakaļ uz galveno lapu</a>
+            <a class="nav-link col-sm text-light" href="ParkingLotList.php">Autostāvlaukumi</a>
+            <a id="logIn" class="nav-link visible col-sm text-light" href="Login.php">Ieiet sistēmā</a>
+            <a id="logOut" class="nav-link col-sm invisible text-light" href="">Izrakstīties no sistēmas</a>
+            <a id="userProfile" class="nav-link col-sm invisible text-light" href="UserProfileView.php">Lietotāja profils</a>
         </nav>
     </div>
 </section>
@@ -43,6 +44,25 @@
                     }
                 }
             }
+        });
+        $("#logOut").click(function() {
+            $.ajax({
+                type: "POST",
+                url: "../Controllers/AjaxController.php",
+                data: {
+                    'action' : 'userLogOut',
+                },
+                dataType: "json",
+                success: function(response)
+                {
+                    location.reload();
+                },
+                error: function(response)
+                {
+                    alert("error")
+                },
+            });
+
         });
     });
 </script>
