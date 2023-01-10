@@ -11,12 +11,12 @@ Install/prepare docker: run docker-compose up (--build)
 
 then, once the docker containers have been created, run
 
-docker exec --workdir /Mapon-prakse-backend-projekts php_container_name composer install
+docker exec --workdir /Kvalifikacijas-darbs php_container_name composer install
 
 to install dependencies from composer. Now, if everything has been installed correctly and no errors appear, can move on to the next part. Database preparation:
 
 Open the php container command line, either through docker desktop or through powershell
-Once php CLI is opened,cd to project directory(which should be /Mapon-prakse-backend-projekts)
+Once php CLI is opened,cd to project directory(which should be /Kvalifikacijas-darbs)
 If phinx.php file isn't in the project, initiate phinx by running "vendor/bin/phinx init"
 run "vendor/bin/phinx migrate"
 then run "vendor/bin/phinx seed:run"
