@@ -29,8 +29,6 @@ include ('Header.php');
         let address = $("#address").val().toString();
         let spaceCount = parseInt($("#spaceCount").val());
         let hourlyRate = parseFloat($("#hourlyRate").val());
-        console.log(hourlyRate);
-        //let ownerId = JSON.parse(<?php //echo json_encode($_SESSION['userId']);?>);
         if(spaceCount> 0 && hourlyRate >= 0){
             $.ajax({
                 type: "POST",
@@ -39,7 +37,6 @@ include ('Header.php');
                     'address': address,
                     'spaceCount': spaceCount,
                     'hourlyRate': hourlyRate,
-                    //'owner_id' : ownerId,
                     'action' : 'lotCreate',
                 },
                 dataType: "json",

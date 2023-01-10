@@ -1,8 +1,8 @@
 <?php
 session_start();
 include ('Header.php');
-/*if(isset($_SESSION['userId'])){
-    echo $_SESSION['userId'];
+/*if(!isset($_SESSION['userId'])){
+    $_SESSION['userId']=-1;
 }*/
 ?>
 <section id="main" class="container-fluid min-vh-100 min-vw-100">
@@ -31,7 +31,6 @@ include ('Header.php');
     </div>
 </section>
 <script>
-    //d-grid gap-3
     $(function(){
         let userStatus=-1;
         $.ajax({
@@ -40,9 +39,7 @@ include ('Header.php');
             async:true,
             data: "action=userGet",
             success: function(data){
-                //console.log(data);
                 let user = JSON.parse(data);
-                //console.log(user);
                 userStatus = user.status;
                 if(user.status>0){
                     document.getElementById("createLot").className="btn btn-info mx-auto visible";
@@ -108,7 +105,8 @@ include ('Header.php');
                 lotBox.appendChild(viewForm);
         }
         function editForm(lotBox,lot){
-            let userId = JSON.parse(<?php echo json_encode($_SESSION['userId'])?>);
+            let userId = JSON.parse(<?php if(isset($_SESSION['userId'])){echo json_encode($_SESSION['userId']);}
+            else echo json_encode(null);?>);
             if(userId === lot.owner_id || userStatus === 2){
                 let editForm = document.createElement("form");
                 editForm.method ="POST";
@@ -146,7 +144,8 @@ include ('Header.php');
             }
         }
         function removeButton(lotBox,lot){
-            let userId = JSON.parse(<?php echo json_encode($_SESSION['userId'])?>);
+            let userId = JSON.parse(<?php if(isset($_SESSION['userId'])){echo json_encode($_SESSION['userId']);}
+                                        else echo json_encode(null);?>);
             if(userId === lot.owner_id || userStatus === 2){
                 let removeButton=document.createElement('button');
                 removeButton.id = "removeButton"+lot.id;

@@ -5,7 +5,6 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     header ("Location: Login.php");
     die();
 }
-//echo $_POST['lotId'];
 include ('Header.php');
 ?>
 <section id="main" class="container-fluid row min-vh-100 min-vw-100">
@@ -146,9 +145,6 @@ include ('Header.php');
                             let lotId=JSON.parse(<?php echo json_encode($_POST['lotId']); ?>);
                             window.location = 'ParkingSpaceOverview.php?lotId='+lotId;
                         }
-                        alert(data);
-                        /*let lotId=JSON.parse(<?php //echo json_encode($_POST['lotId']); ?>);
-                        window.location = 'ParkingSpaceOverview.php?lotId='+lotId;*/
                     },
                     error: function (response) {
                         let error = JSON.parse(response.responseText);

@@ -11,7 +11,7 @@ class Router{
             $r->get('/public/index.php', 'sendToIndex');
             $r->get('/', 'sendToIndex');
             $r->get('/index.php', 'sendToIndex');
-            $r->post('/app/views/ParkingLotList.php', 'sendToLotList');
+            $r->post('/ParkingLotList.php', 'sendToLotList');
             $r->post('/app/views/Login.php', 'sendToLogin');
             $r->post('/app/views/ParkingLotCreation.php', 'sendToLotCreation');
             $r->post('/app/views/ParkingSpaceOverview.php', 'sendToSpaceOverview');
@@ -22,10 +22,21 @@ class Router{
             $r->post('/app/lot/{lotId:\d+}', 'sendToSpaceOverview');
             $r->post('/app/user/{userId:\d+}', 'sendToUser');
             $r->post('/app/lot/{lotId:\d+}/space/{spaceId:\d+}', 'sendToReservation');
+            /*$r->post('/app/views/ParkingLotList.php', 'sendToLotList');
+            $r->post('/app/views/Login.php', 'sendToLogin');
+            $r->post('/app/views/ParkingLotCreation.php', 'sendToLotCreation');
+            $r->post('/app/views/ParkingSpaceOverview.php', 'sendToSpaceOverview');
+            $r->post('/app/views/Signup.php', 'sendToSignup');
+            $r->post('/app/views/UserProfileView.php', 'sendToUser');
+            $r->post('/app/views/ParkingSpaceReservation.php', 'sendToReservation');//{id:\d+}
+
+            $r->post('/app/lot/{lotId:\d+}', 'sendToSpaceOverview');
+            $r->post('/app/user/{userId:\d+}', 'sendToUser');
+            $r->post('/app/lot/{lotId:\d+}/space/{spaceId:\d+}', 'sendToReservation');*/
         });
     }
-    public function dispatchRoute($uri){
-        $httpMethod = 'GET';
+    public function dispatchRoute($uri,$requestMethod){
+        $httpMethod = $requestMethod;
         $uri = cleanURI($uri);
         $routeInfo = $this->dispatcher->dispatch($httpMethod, $uri);
         switch ($routeInfo[0]) {
@@ -54,8 +65,8 @@ function cleanURI($uri){
     return $uri;
 }
 function sendToIndex(){
-    //header('Location: ../app/Views/Index.php');
-    header('Location: ../public/Index.php');
+    header('Location: ../app/Views/Index.php');
+    //header('Location: index.php');
     exit();
 }
 function sendToLogin(){

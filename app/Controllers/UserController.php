@@ -85,19 +85,6 @@ class UserController{
         return (new User(-1))->addUser($username,$password,$emailFiltered);
     }
 
-    public function isUserLoggedIn() : bool
-    {
-        /*
-         * pārbaudīt, vai lietotājs ir ielogojies, vai nē.
-         * */
-        //Vajadzētu kaut kādu cookie/paņemt metodi no mana prakses darba.
-        session_start();
-        if(!empty($_SESSION['userId'])){
-            return true;
-        }
-        return false;
-    }
-
     // https://www.codexworld.com/how-to/validate-password-strength-in-php/
     public function validatePassword(?string $password) : bool
     {

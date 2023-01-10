@@ -136,8 +136,6 @@ class Reservation{
             OR (`from` >= :timeFrom AND `till` <= :timeTill)
             OR (`from` > :timeFrom AND `till` > :timeTill AND `from` < :timeTill)
         MySQL;
-        /*$timeFrom = date('Y-m-d H:i:s',$from->getTimestamp());
-        $timeTill = date('Y-m-d H:i:s',$till->getTimestamp());*/
         $params = [
             'space_id' => $space_id,
             'timeFrom' => $from,

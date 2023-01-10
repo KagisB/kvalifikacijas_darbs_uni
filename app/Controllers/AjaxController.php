@@ -11,18 +11,18 @@ use App\Controllers\UserController as UserController;
 use DateTime;
 
 $errors = [];
-/*$_POST['action']='reservationCreate';
-$_POST['userId']=1;
-$_POST['spaceId']=27;
-$_POST['from']="2023-01-06 05:30:00";
-$_POST['till']="2023-01-06 10:30:00";*/
+
 if(!empty($_POST['action'])){
     switch($_POST['action']){
         case 'userGet':
             $userInfo = (new UserController)->getUserInfo();
-            $userInfoJson = json_encode($userInfo);
-            echo $userInfoJson;
+            if($userInfo){
+                $userInfoJson = json_encode($userInfo);
+                echo $userInfoJson;
 
+                break;
+            }
+            echo json_encode(false);
             break;
         case 'userLogIn':
             if(isset($_POST['username']) && isset($_POST['password'])) {
@@ -140,14 +140,14 @@ if(!empty($_POST['action'])){
             echo $jErrors;
 
             break;
-        case 'spaceInfo':
-            if(isset($_GET['spaceId'])){
+        //case 'spaceInfo':
+            //if(isset($_GET['spaceId'])){
                 //echo json_encode((new ReservationController)->showSpaceReservations());
-                echo json_encode(true);
-                break;
-            }
+                //echo json_encode(true);
+                //break;
+            //}
 
-            break;
+            //break;
         case 'reservationCreate':
             if(isset($_POST['from']) && isset($_POST['till']) && isset($_POST['spaceId']) && isset($_POST['userId'])) {
                 $userId = intval($_POST['userId']);

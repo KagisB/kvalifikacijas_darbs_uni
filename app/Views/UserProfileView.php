@@ -5,7 +5,6 @@ if (!isset($_SESSION['logInStatus']) || $_SESSION['logInStatus'] !== true) {
     header ("Location: Login.php");
     die();
 }
-//echo $_SESSION['logInStatus'];
 include ('Header.php');
 ?>
 <section id="main" class="container-fluid min-vh-100 min-vw-100">

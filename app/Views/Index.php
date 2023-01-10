@@ -6,8 +6,7 @@ $isLoggedIn = false;
 if(isset($_SESSION['userId'])){
     $isLoggedIn = true;
 }
-/*echo $_SESSION['userId'];
-echo $_SESSION['logInStatus'];*/
+
 ?>
 <section id="main" class="container-fluid row min-vh-100 min-vw-100">
     <div id="buffer1" class="col bg-info"></div>

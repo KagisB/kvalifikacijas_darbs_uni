@@ -10,8 +10,8 @@ use PDOException;
 
 class DBConnection
 {
-    //private const DB_HOSTNAME = 'db';
-    private const DB_HOSTNAME = '127.0.0.1';
+    //private const DB_HOSTNAME = '127.0.0.1';
+    private const DB_HOSTNAME = 'db';
     private const DB_USERNAME = 'root';
     private const DB_PASSWORD = 'root';
     private const DB_DATABASE = 'carParking';
